@@ -1,0 +1,543 @@
+/* ============================================================
+   SMILECRAFT — Hero Section
+   hero.css
+   Import after: variables.css → global.css → Hero.css
+   ============================================================ */
+
+
+/* ── HERO WRAPPER ─────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  background-color: var(--color-bg-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-block-start: var(--navbar-height);
+}
+
+
+/* ── SOFT PURPLE / LAVENDER BACKGROUND BLOBS ─────────────── */
+/* These recreate the soft blue-purple gradient background
+   seen in the reference image                               */
+
+.hero__bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Large lavender blob — fills most of upper hero area */
+.hero__bg-blob--1 {
+  width: 100%;
+  height: 80%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 10%,
+    rgba(180, 185, 240, 0.35) 0%,
+    rgba(200, 210, 245, 0.20) 50%,
+    transparent 80%
+  );
+}
+
+/* Teal hint — left side */
+.hero__bg-blob--2 {
+  width: 60%;
+  height: 60%;
+  top: 5%;
+  left: -10%;
+  background: radial-gradient(
+    ellipse 70% 60% at 20% 40%,
+    rgba(137, 169, 164, 0.10) 0%,
+    transparent 70%
+  );
+}
+
+/* Gold hint — right side */
+.hero__bg-blob--3 {
+  width: 50%;
+  height: 50%;
+  top: 10%;
+  right: -5%;
+  background: radial-gradient(
+    ellipse 60% 50% at 80% 30%,
+    rgba(212, 176, 106, 0.07) 0%,
+    transparent 70%
+  );
+}
+
+
+/* ── CENTER CONTENT BLOCK ─────────────────────────────────── */
+
+.hero__center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-inline: var(--container-padding);
+  padding-block-start: clamp(var(--space-8), 5vw, var(--space-16));
+  padding-block-end: var(--space-8);
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  width: 100%;
+  animation: fadeUp var(--duration-page) var(--ease-out) 0.1s both;
+}
+
+
+/* ── BADGE PILLS ──────────────────────────────────────────── */
+
+/* Shared badge pill style */
+.hero__badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Top pill — white card above heading */
+.hero__badge-pill--top {
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border-default);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-5);
+  color: var(--color-charcoal);
+  animation: scaleIn var(--duration-slow) var(--ease-spring) 0.2s both;
+}
+
+/* Inline pill — sits right of "Smile" word */
+.hero__badge-pill--inline {
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border-default);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-charcoal);
+  font-size: 0.65rem;
+  vertical-align: middle;
+  margin-left: var(--space-2);
+  position: relative;
+  top: -4px;
+  animation: scaleIn var(--duration-slow) var(--ease-spring) 0.5s both;
+}
+
+/* Badge icon circle */
+.hero__badge-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hero__badge-icon svg {
+  width: 14px;
+  height: 14px;
+  color: #fff;
+}
+
+/* Check icon variant — teal */
+.hero__badge-icon--check {
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-mid) 100%);
+  width: 20px;
+  height: 20px;
+}
+
+.hero__badge-icon--check svg {
+  width: 10px;
+  height: 10px;
+}
+
+.hero__badge-text {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-charcoal);
+}
+
+
+/* ── HEADING ──────────────────────────────────────────────── */
+
+.hero__heading {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-4xl), 7vw, var(--text-6xl));
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-heading);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero__heading-line {
+  display: block;
+}
+
+/* Row containing "Your Smile" + inline badge */
+.hero__heading-smile-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.hero__heading-your {
+  display: inline;
+}
+
+/* "Smile" word — italic navy, with smile arc SVG below */
+.hero__smile-word {
+  font-style: italic;
+  color: var(--color-navy-mid);
+  position: relative;
+  display: inline-block;
+  /* extra bottom padding so the arc SVG has room */
+  padding-bottom: 10px;
+}
+
+/* ── SMILE ARC SVG — curved smile shape under the word ── */
+.hero__smile-arc {
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: 20px;
+  color: var(--color-gold);
+  display: block;
+  /* Animate the arc drawing in */
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  animation: drawArc 0.9s var(--ease-out) 0.9s forwards;
+}
+
+@keyframes drawArc {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── TOOTH TOGGLE PILL — purple oval with tooth icon ── */
+/* Sits to the left of "Your Smile" in the heading row  */
+.hero__tooth-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 72px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  /* Purple / lavender background matching the reference */
+  background: linear-gradient(135deg, #a89de8 0%, #8b7fd4 100%);
+  box-shadow: 0 4px 16px rgba(138, 127, 212, 0.35);
+  padding: 4px;
+  flex-shrink: 0;
+  animation: scaleIn var(--duration-slow) var(--ease-spring) 0.4s both;
+  /* Slight rotation like in the reference image */
+  transform: rotate(-6deg);
+}
+
+/* The white knob inside the toggle that holds the tooth icon */
+.hero__tooth-toggle-knob {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hero__tooth-toggle-knob svg {
+  width: 16px;
+  height: 16px;
+  color: #8b7fd4;
+}
+
+@keyframes expandWidth {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+
+/* ── SUBTEXT ──────────────────────────────────────────────── */
+
+.hero__subtext {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 52ch;
+  margin-inline: auto;
+  margin-bottom: var(--space-8);
+}
+
+
+/* ── CTA BUTTONS ──────────────────────────────────────────── */
+
+.hero__cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-10);
+  animation: fadeUp var(--duration-page) var(--ease-out) 0.35s both;
+}
+
+
+/* ── TRUST ROW ────────────────────────────────────────────── */
+
+.hero__trust-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  animation: fadeUp var(--duration-page) var(--ease-out) 0.45s both;
+}
+
+.hero__trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.hero__trust-number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-text-heading);
+  line-height: 1;
+}
+
+.hero__trust-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.hero__trust-divider {
+  width: 1px;
+  height: 36px;
+  background-color: var(--color-border-default);
+}
+
+.hero__stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-gold);
+}
+
+.hero__stars-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-left: var(--space-1);
+  font-weight: var(--weight-medium);
+}
+
+
+/* ── IMAGE STRIP ──────────────────────────────────────────── */
+
+.hero__image-strip {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin-top: auto;
+  overflow: hidden;
+  animation: fadeUp var(--duration-page) var(--ease-out) 0.3s both;
+}
+
+.hero__strip-img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+  max-height: 340px;
+  min-height: 240px;
+}
+
+
+/* ── FLOATING PILL BADGES over image ─────────────────────── */
+
+.hero__pill-group {
+  position: absolute;
+  top: 12px;
+  display: flex;
+  gap: var(--space-3);
+  z-index: 10;
+}
+
+.hero__pill-group--left  { left: var(--container-padding); }
+.hero__pill-group--right { right: var(--container-padding); }
+
+.hero__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  animation: scaleIn var(--duration-slow) var(--ease-spring) 0.6s both;
+}
+
+.hero__pill--professional {
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-border-default);
+}
+
+.hero__pill--professional .hero__pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-navy);
+  animation: goldPulse 2s infinite;
+}
+
+.hero__pill--advanced {
+  background-color: var(--color-navy);
+  color: #fff;
+  border: 1px solid var(--color-navy-dark);
+}
+
+.hero__pill--advanced .hero__pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+}
+
+
+/* ── VIEW ALL SERVICES PILL ───────────────────────────────── */
+
+.hero__view-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  background-color: var(--color-navy);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  box-shadow: var(--shadow-navy);
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    transform var(--duration-fast) var(--ease-spring);
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  white-space: nowrap;
+  animation: fadeUp var(--duration-page) var(--ease-out) 0.7s both;
+}
+
+.hero__view-pill:hover {
+  background-color: var(--color-navy-dark);
+  box-shadow: var(--shadow-navy-hover);
+  transform: translateX(-50%) translateY(-2px);
+  color: #fff;
+}
+
+.hero__view-pill svg {
+  width: 16px;
+  height: 16px;
+  transition: transform var(--duration-base) var(--ease-spring);
+}
+
+.hero__view-pill:hover svg {
+  transform: translateX(3px);
+}
+
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .hero__heading {
+    font-size: clamp(var(--text-3xl), 9vw, var(--text-4xl));
+  }
+
+  .hero__heading-smile-row {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .hero__badge-pill--inline,
+  .hero__tooth-toggle {
+    display: none;
+  }
+
+  .hero__cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__cta-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero__trust-row {
+    gap: var(--space-4);
+  }
+
+  .hero__strip-img {
+    max-height: 220px;
+    min-height: 160px;
+  }
+
+  .hero__pill-group {
+    display: none;
+  }
+
+  .hero__view-pill {
+    bottom: 14px;
+    font-size: var(--text-xs);
+    padding: var(--space-2) var(--space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__trust-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    justify-items: center;
+  }
+
+  .hero__trust-divider {
+    display: none;
+  }
+}

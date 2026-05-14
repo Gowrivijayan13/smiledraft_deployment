@@ -1,0 +1,544 @@
+/* ============================================================
+   SMILECRAFT DENTAL — Testimonials Section
+   testimonials.css
+   Depends on: variables.css → global.css → testimonials.css
+   ============================================================ */
+
+/* ─── Section Wrapper ──────────────────────────────────────── */
+.testimonials {
+  background-color: var(--color-ash);
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--section-padding-x);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle background orb */
+.testimonials::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(212, 176, 106, 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.testimonials::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(23, 50, 77, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* ─── Section Header ───────────────────────────────────────── */
+.testimonials__header {
+  text-align: center;
+  margin-bottom: var(--space-16);
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+.testimonials__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-4);
+}
+
+.testimonials__eyebrow::before,
+.testimonials__eyebrow::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--color-gold);
+  opacity: 0.7;
+}
+
+.testimonials__title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-4xl));
+  font-weight: var(--weight-semibold);
+  color: var(--color-navy);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin-bottom: var(--space-4);
+}
+
+.testimonials__title .italic {
+  font-style: italic;
+  color: var(--color-gold);
+}
+
+.testimonials__subtitle {
+  font-size: var(--text-md);
+  color: var(--color-charcoal-mid);
+  max-width: 52ch;
+  margin-inline: auto;
+  line-height: var(--leading-relaxed);
+}
+
+/* ─── Bento Grid ───────────────────────────────────────────── */
+.testimonials__grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto;
+  gap: var(--space-5);
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+/* ─── Base Card ────────────────────────────────────────────── */
+.tcard {
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  transition:
+    box-shadow var(--duration-slow) var(--ease-out),
+    border-color var(--duration-slow) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.tcard:hover {
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-gold-border);
+  transform: translateY(-4px);
+}
+
+/* ─── Card Slot Assignments (12-col grid) ──────────────────── */
+
+/* Row 1 */
+.tcard--a { grid-column: 1 / 5;  grid-row: 1; }   /* Medium — inline avatar right */
+.tcard--b { grid-column: 5 / 9;  grid-row: 1; }   /* Tall hero — featured */
+.tcard--c { grid-column: 9 / 13; grid-row: 1; }   /* Small — quote only */
+
+/* Row 2 */
+.tcard--d { grid-column: 1 / 4;  grid-row: 2; }   /* Small */
+.tcard--e { grid-column: 4 / 7;  grid-row: 2; }   /* Portrait photo card */
+.tcard--f { grid-column: 7 / 10; grid-row: 2; }   /* Portrait photo card */
+.tcard--g { grid-column: 10 / 13; grid-row: 2; }  /* Small */
+
+/* ─── VARIANT A — Horizontal avatar (inline right) ─────────── */
+.tcard--horizontal {
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.tcard--horizontal .tcard__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tcard--horizontal .tcard__avatar-wrap {
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/* ─── VARIANT B — Featured (tall, dark navy bg) ────────────── */
+.tcard--featured {
+  background: var(--gradient-cta-dark);
+  border-color: transparent;
+  padding: var(--space-10) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
+}
+
+.tcard--featured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 100% 80% at 50% 110%,
+    rgba(212, 176, 106, 0.10) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.tcard--featured .tcard__quote-mark {
+  color: var(--color-gold);
+  opacity: 0.25;
+}
+
+.tcard--featured .tcard__text {
+  color: rgba(255, 255, 255, 0.90);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  font-style: italic;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  margin-bottom: var(--space-6);
+}
+
+.tcard--featured .tcard__name {
+  color: var(--color-gold);
+}
+
+.tcard--featured .tcard__role {
+  color: rgba(255, 255, 255, 0.50);
+}
+
+.tcard--featured .tcard__stars {
+  color: var(--color-gold);
+}
+
+/* ─── VARIANT C — Photo portrait (image fills top half) ─────── */
+.tcard--portrait {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tcard--portrait .tcard__photo {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  background-color: var(--color-ash-dark);
+  position: relative;
+}
+
+/* Placeholder gradient for photo area */
+.tcard--portrait .tcard__photo-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(
+    135deg,
+    var(--color-ash-dark) 0%,
+    var(--color-ash) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--color-charcoal-muted);
+}
+
+.tcard--portrait .tcard__content {
+  padding: var(--space-6);
+  flex: 1;
+}
+
+/* ─── VARIANT D — Wide banner (bottom row full) ──────────────── */
+.tcard--wide {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+.tcard--wide .tcard__body {
+  flex: 1;
+  text-align: center;
+}
+
+.tcard--wide .tcard__avatars {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* ─── Quote Mark ───────────────────────────────────────────── */
+.tcard__quote-mark {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--color-navy);
+  opacity: 0.08;
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-6);
+  user-select: none;
+  pointer-events: none;
+  font-weight: var(--weight-bold);
+}
+
+.tcard__quote-mark--close {
+  top: auto;
+  left: auto;
+  bottom: var(--space-4);
+  right: var(--space-6);
+}
+
+/* ─── Stars ─────────────────────────────────────────────────── */
+.tcard__stars {
+  display: flex;
+  gap: 3px;
+  color: var(--star-color);
+  margin-bottom: var(--space-4);
+}
+
+.tcard__star {
+  font-size: var(--text-base);
+  line-height: 1;
+}
+
+/* ─── Headline ───────────────────────────────────────────────── */
+.tcard__headline {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-navy);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  margin-bottom: var(--space-3);
+}
+
+/* ─── Body Text ──────────────────────────────────────────────── */
+.tcard__text {
+  font-size: var(--text-base);
+  color: var(--color-charcoal-mid);
+  line-height: var(--leading-relaxed);
+  max-width: none;
+}
+
+/* ─── Author ─────────────────────────────────────────────────── */
+.tcard__author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.tcard__author--top {
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+}
+
+.tcard__name {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-navy);
+  letter-spacing: var(--tracking-snug);
+}
+
+.tcard__role {
+  font-size: var(--text-xs);
+  color: var(--color-charcoal-muted);
+  letter-spacing: var(--tracking-wide);
+  margin-top: 2px;
+}
+
+/* ─── Avatar ─────────────────────────────────────────────────── */
+.tcard__avatar-wrap {
+  position: relative;
+}
+
+.tcard__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--color-ash-dark);
+  border: 2px solid var(--color-white);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-navy);
+  overflow: hidden;
+}
+
+.tcard__avatar--lg {
+  width: 72px;
+  height: 72px;
+  font-size: var(--text-2xl);
+}
+
+.tcard__avatar--circle-border {
+  border: 3px solid var(--color-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+/* Gold dot badge */
+.tcard__avatar-wrap::after {
+  content: '✓';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  background-color: var(--color-gold);
+  border-radius: 50%;
+  border: 2px solid var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--color-navy);
+  font-weight: var(--weight-bold);
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ─── Multiple small avatars strip ──────────────────────────── */
+.tcard__avatar-strip {
+  display: flex;
+}
+
+.tcard__avatar-strip .tcard__avatar {
+  width: 44px;
+  height: 44px;
+  font-size: var(--text-base);
+  margin-left: -10px;
+  border: 2px solid var(--color-white);
+}
+
+.tcard__avatar-strip .tcard__avatar:first-child {
+  margin-left: 0;
+}
+
+/* ─── Gold Divider inside card ───────────────────────────────── */
+.tcard__divider {
+  width: 40px;
+  height: 1px;
+  background: var(--color-gold);
+  opacity: 0.6;
+  margin-block: var(--space-4);
+}
+
+/* ─── Tag pill ───────────────────────────────────────────────── */
+.tcard__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-navy);
+  background-color: var(--color-navy-soft);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+/* ─── CTA Button Row ─────────────────────────────────────────── */
+.testimonials__footer {
+  text-align: center;
+  margin-top: var(--space-12);
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+/* ─── Entrance Animations ────────────────────────────────────── */
+.tcard {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: tCardIn var(--duration-page) var(--ease-out) forwards;
+}
+
+.tcard--a { animation-delay: 0ms; }
+.tcard--b { animation-delay: 80ms; }
+.tcard--c { animation-delay: 160ms; }
+.tcard--d { animation-delay: 120ms; }
+.tcard--e { animation-delay: 200ms; }
+.tcard--f { animation-delay: 280ms; }
+.tcard--g { animation-delay: 240ms; }
+
+@keyframes tCardIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .tcard--a { grid-column: 1 / 7; }
+  .tcard--b { grid-column: 7 / 13; }
+  .tcard--c { grid-column: 1 / 5; grid-row: 2; }
+  .tcard--d { grid-column: 5 / 9; grid-row: 2; }
+  .tcard--e { grid-column: 9 / 13; grid-row: 2; }
+  .tcard--f { grid-column: 1 / 5; grid-row: 3; }
+  .tcard--g { grid-column: 5 / 9; grid-row: 3; }
+}
+
+@media (max-width: 768px) {
+  .testimonials__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+  }
+
+  .tcard--a,
+  .tcard--b,
+  .tcard--c,
+  .tcard--d,
+  .tcard--e,
+  .tcard--f,
+  .tcard--g {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .tcard--b {
+    grid-column: 1 / -1;
+  }
+
+  .tcard--featured {
+    min-height: 240px;
+  }
+
+  .tcard--horizontal {
+    flex-direction: column;
+  }
+
+  .tcard--wide {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-6);
+  }
+
+  .tcard--portrait .tcard__photo-placeholder {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tcard--b {
+    grid-column: 1;
+  }
+
+  .tcard {
+    padding: var(--space-6);
+  }
+}

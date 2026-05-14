@@ -1,0 +1,387 @@
+/* ============================================================
+   SMILECRAFT — About Section
+   About.css
+   Import after: variables.css → global.css → About.css
+   All colors and tokens come from variables.css only.
+   ============================================================ */
+
+
+/* ── SECTION WRAPPER ──────────────────────────────────────── */
+
+.about {
+  position: relative;
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-padding);
+  background-color: var(--color-ash);        /* Ash gray section bg */
+  overflow: hidden;
+}
+
+/* Soft decorative circle — top right corner */
+.about__bg-circle {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(212, 176, 106, 0.08) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ── INNER GRID — split layout ────────────────────────────── */
+
+.about__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(var(--space-10), 6vw, var(--space-20));
+  align-items: center;
+}
+
+
+/* ── SCROLL FADE-UP ANIMATION ─────────────────────────────── */
+/* Section starts invisible; JS adds .about--visible on scroll */
+
+.about__content,
+.about__visual {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+/* Left content animates first */
+.about--visible .about__content {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+
+/* Right visual animates slightly after */
+.about--visible .about__visual {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.25s;
+}
+
+
+/* ── LEFT — TEXT CONTENT ──────────────────────────────────── */
+
+.about__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Eyebrow label */
+.about__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: var(--space-1);
+}
+
+.about__eyebrow svg {
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+/* Section heading */
+.about__heading {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-3xl), 4vw, var(--text-4xl));
+  font-weight: var(--weight-semibold);
+  color: var(--color-navy);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+
+/* "Better Care" — italic gold accent */
+.about__heading-accent {
+  font-style: italic;
+  color: var(--color-gold);
+}
+
+/* Gold divider line under heading */
+.about__gold-line {
+  width: 64px;
+  height: 2px;
+  background: var(--gradient-gold-line);
+  border-radius: var(--radius-full);
+  margin-block: var(--space-1);
+}
+
+/* Body paragraphs */
+.about__body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--color-charcoal-mid);
+  line-height: var(--leading-relaxed);
+  max-width: 52ch;
+  margin: 0;
+}
+
+/* Highlight checklist */
+.about__highlights {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+}
+
+.about__highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-charcoal);
+  line-height: var(--leading-snug);
+}
+
+/* Check icon circle */
+.about__highlight-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.about__highlight-icon svg {
+  color: #fff;
+}
+
+/* Tagline */
+.about__tagline {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--color-navy-mid);
+  letter-spacing: var(--tracking-snug);
+  border-left: 3px solid var(--color-gold);
+  padding-left: var(--space-4);
+  margin: var(--space-2) 0 0;
+}
+
+/* CTA button */
+.about__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.about__cta svg {
+  transition: transform var(--duration-base) var(--ease-spring);
+}
+
+.about__cta:hover svg {
+  transform: translateX(4px);
+}
+
+
+/* ── RIGHT — VISUAL / IMAGE ───────────────────────────────── */
+
+.about__visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Image wrapper — rounded with gold frame offset */
+.about__img-wrap {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: visible;   /* allow gold frame to bleed outside */
+}
+
+/* The clinic image */
+.about__img {
+  width: 100%;
+  height: clamp(320px, 45vw, 520px);
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--radius-2xl);
+  display: block;
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow-xl);
+}
+
+/* Gold offset frame — decorative border behind image */
+.about__img-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-2xl);
+  border: 2px solid var(--color-gold-border);
+  transform: translate(12px, 12px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+/* ── FLOATING STAT CARDS ──────────────────────────────────── */
+
+.about__stats {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.about__stat-card {
+  flex: 1;
+  min-width: 100px;
+  background-color: var(--color-bg-white);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow var(--duration-slow) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.about__stat-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-4px);
+}
+
+.about__stat-number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--color-navy);
+  line-height: 1;
+}
+
+.about__stat-label {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+
+/* ── FLOATING BADGE ───────────────────────────────────────── */
+
+.about__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  background-color: var(--color-navy);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-navy);
+}
+
+.about__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+  animation: goldPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .about__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+
+  .about__content {
+    max-width: 100%;
+  }
+
+  .about__body {
+    max-width: 100%;
+  }
+
+  .about__cta {
+    align-self: flex-start;
+  }
+
+  .about__img {
+    height: clamp(260px, 50vw, 400px);
+  }
+
+  .about__img-frame {
+    display: none; /* hide decorative frame on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding-block: var(--section-padding-y-sm);
+  }
+
+  .about__heading {
+    font-size: clamp(var(--text-2xl), 7vw, var(--text-3xl));
+  }
+
+  .about__stats {
+    gap: var(--space-2);
+  }
+
+  .about__stat-card {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .about__stat-number {
+    font-size: var(--text-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .about__stats {
+    grid-template-columns: repeat(3, 1fr);
+    display: grid;
+  }
+
+  .about__stat-card {
+    min-width: unset;
+  }
+}
