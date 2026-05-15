@@ -228,6 +228,7 @@ export default function TreatmentsSection({ onViewAll }) {
 
       {/* ── FOOTER CTA ── */}
       <div className="treatments__footer">
+        <a href="/conatct#Contactsection">
         <button
           className="btn btn--primary treatments__cta"
           onClick={onViewAll}
@@ -236,6 +237,7 @@ export default function TreatmentsSection({ onViewAll }) {
           View All Treatments
           
         </button>
+        </a>
       </div>
 
     </section>

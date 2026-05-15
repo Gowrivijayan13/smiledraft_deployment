@@ -236,6 +236,7 @@ export default function BeforeAfterSection({ onExplore }) {
             that feel natural, healthy, and confident.
           </p>
         </div>
+        <a href="#reviews">
         <button
           className="btn btn--primary ba__cta"
           onClick={onExplore}
@@ -245,6 +246,7 @@ export default function BeforeAfterSection({ onExplore }) {
           Explore More Smile Stories
           
         </button>
+        </a>
       </div>
 
     </section>

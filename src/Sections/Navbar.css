@@ -33,7 +33,7 @@
 .header-logo img,
 .merged-logo img {
   display: block;
-  height: 60px;
+  height: 100px;
   transition: var(--transition-base);
 }
 
@@ -160,7 +160,7 @@
 }
 
 .merged-logo img {
-  height: 48px;
+  height: 78px;
 }
 
 .merged-divider {
@@ -176,7 +176,10 @@
 }
 
 .merged-nav .nav-link {
-  font-size: var(--text-xs);
+ 
+  font-size: var(--text-sm);
+ 
+
 }
 
 .merged-btn {
@@ -297,4 +300,7 @@
   .header-logo img {
     height: 50px;
   }
+}
+html {
+  scroll-behavior: smooth;
 }

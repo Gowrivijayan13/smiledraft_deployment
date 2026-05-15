@@ -289,7 +289,7 @@ const Testimonials = () => {
 
       {/* ── Footer CTA ── */}
       <div className="testimonials__footer">
-        <a href="#contact" className="btn btn--primary btn--md">
+        <a href="#Contactsection" className="btn btn--primary btn--md">
           Read More Reviews
         </a>
       </div>

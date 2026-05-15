@@ -69,6 +69,7 @@ export default function AboutSection({ onLearnMore }) {
 
   return (
     <section
+     id="abt"
       className="about"
       ref={sectionRef}
       aria-label="About SmileCraft Dental Studio"
@@ -126,6 +127,7 @@ export default function AboutSection({ onLearnMore }) {
           </p>
 
           {/* CTA */}
+          <a href="/conatct#Contactsection">
           <button
             className="btn btn--primary about__cta"
             onClick={onLearnMore}
@@ -134,6 +136,7 @@ export default function AboutSection({ onLearnMore }) {
             Discover Our Story
            
           </button>
+          </a>
 
         </div>
 

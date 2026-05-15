@@ -70,8 +70,13 @@ function useIntersect(threshold = 0.15) {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
+      { threshold },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -99,7 +104,11 @@ function FeatureCard({ item, index, active, onHover }) {
       <div className="why-card__top">
         <span className="why-card__icon">{item.icon}</span>
         <div className="why-card__stat-wrap">
-          <span className={`why-card__stat ${isGold ? "why-card__stat--gold" : ""}`}>{item.stat}</span>
+          <span
+            className={`why-card__stat ${isGold ? "why-card__stat--gold" : ""}`}
+          >
+            {item.stat}
+          </span>
           <span className="why-card__stat-label">{item.statLabel}</span>
         </div>
       </div>
@@ -116,7 +125,13 @@ function FeatureCard({ item, index, active, onHover }) {
       {/* Hover arrow */}
       <div className="why-card__arrow">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M3 8h10M9 4l4 4-4 4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </div>
     </div>
@@ -542,24 +557,28 @@ export default function WhyChooseUs() {
 
       <section className="why-section" id="technology">
         <div className="why-container">
-
           {/* Header */}
-          <div ref={headerRef} className={`why-header${headerVisible ? " visible" : ""}`}>
+          <div
+            ref={headerRef}
+            className={`why-header${headerVisible ? " visible" : ""}`}
+          >
             <div>
               <p className="why-eyebrow">Why Choose Us</p>
               <h2 className="why-heading">
-                Modern Dentistry,<br />
+                Modern Dentistry,
+                <br />
                 <em>Human Care</em>
               </h2>
             </div>
             <div className="why-header-right">
               <p className="why-subtext">
-                We combine the precision of modern dental science with the warmth of a clinic that genuinely cares — because your smile deserves both.
+                We combine the precision of modern dental science with the
+                warmth of a clinic that genuinely cares — because your smile
+                deserves both.
               </p>
-              <button className="why-cta-inline">
-                Book Consultation
-                
-              </button>
+              <a href="#Contactsection">
+                <button className="why-cta-inline">Book Consultation</button>
+              </a>
             </div>
           </div>
 
@@ -580,25 +599,32 @@ export default function WhyChooseUs() {
           <div className="why-trust">
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text"><strong>10,000+</strong> Smiles Transformed</p>
+              <p className="why-trust__text">
+                <strong>10,000+</strong> Smiles Transformed
+              </p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text"><strong>15+ Years</strong> Clinical Experience</p>
+              <p className="why-trust__text">
+                <strong>15+ Years</strong> Clinical Experience
+              </p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text"><strong>4.9★</strong> Patient Satisfaction</p>
+              <p className="why-trust__text">
+                <strong>4.9★</strong> Patient Satisfaction
+              </p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text"><strong>Fear-Free</strong> Dental Care</p>
+              <p className="why-trust__text">
+                <strong>Fear-Free</strong> Dental Care
+              </p>
             </div>
           </div>
-
         </div>
       </section>
     </>

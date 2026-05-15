@@ -30,9 +30,7 @@ function Header() {
     if (section) {
       const headerOffset = 100; // adjust to navbar height
       const sectionPosition =
-        section.getBoundingClientRect().top +
-        window.pageYOffset -
-        headerOffset;
+        section.getBoundingClientRect().top + window.pageYOffset - headerOffset;
 
       window.scrollTo({
         top: sectionPosition,
@@ -48,13 +46,18 @@ function Header() {
       <header className={`header ${scrolled ? "scrolled" : ""}`}>
         {/* LEFT — Logo */}
         <div className="header-logo">
-          <button
-            className="logo-btn"
-            onClick={() => scrollToSection("home")}
-          >
-            <img src={logodental} alt="SmileCraft logo" />
-          </button>
-        </div>
+  <button
+    className="logo-btn"
+    onClick={() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }}
+  >
+    <img src={logodental} alt="SmileCraft logo" />
+  </button>
+</div>
 
         {/* CENTER — Navigation */}
         <nav className="header-nav-pill">
@@ -71,45 +74,56 @@ function Header() {
 
         {/* RIGHT — CTA */}
         <div className="header-join">
-          <Link to="/contact">
-            <button className="btn">
-              Book Consultation
-            </button>
-          </Link>
+          <a href="/contact#Contactsection" className="btn">
+            Book Consultation
+          </a>
         </div>
 
-        {/* MERGED PILL */}
-        <div className={`header-merged ${scrolled ? "show" : ""}`}>
-          <button
-            className="merged-logo logo-btn"
-            onClick={() => scrollToSection("home")}
-          >
-            <img src={logodental} alt="SmileCraft logo" />
-          </button>
+      {/* MERGED PILL */}
+<div className={`header-merged ${scrolled ? "show" : ""}`}>
+  <button
+    className="merged-logo logo-btn"
+    onClick={() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }}
+  >
+    <img src={logodental} alt="SmileCraft logo" />
+  </button>
 
-          <div className="merged-divider" />
+  <div className="merged-divider" />
 
-          <nav className="merged-nav">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                className="nav-link"
-                onClick={() => scrollToSection(link.id)}
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
+  <nav className="merged-nav">
+    {navLinks.map((link) => (
+      <button
+        key={link.id}
+        className="nav-link"
+        onClick={() => {
+          if (link.id === "home") {
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          } else {
+            scrollToSection(link.id);
+          }
+        }}
+      >
+        {link.label}
+      </button>
+    ))}
+  </nav>
 
-          <div className="merged-divider" />
+  <div className="merged-divider" />
 
-          <Link to="/contact">
-            <button className="btn merged-btn">
-              Book Consultation
-            </button>
-          </Link>
-        </div>
-
+  <a href="/contact#Contactsection">
+    <button className="btn merged-btn">
+      Book Consultation
+    </button>
+  </a>
+</div>
         {/* Mobile Toggle */}
         <button
           className="mobile-toggle"
@@ -138,7 +152,7 @@ function Header() {
           </button>
         ))}
 
-        <Link to="/contact">
+        <a href="/contact#Contactsection">
           <button
             className="btn"
             style={{ marginTop: "1rem" }}
@@ -146,7 +160,7 @@ function Header() {
           >
             Book Consultation
           </button>
-        </Link>
+        </a>
       </div>
     </>
   );

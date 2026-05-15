@@ -158,8 +158,8 @@ function FeaturedDoctorCard({ doc }) {
 
         {/* CTA */}
         <div className="doc-featured__actions">
-          <button className="doc-btn doc-btn--primary">Book with Dr. Priya</button>
-          <button className="doc-btn doc-btn--ghost">View Full Profile</button>
+          <a href="#Contactsection"><button className="doc-btn doc-btn--primary">Book with Dr. Priya</button></a>
+          
         </div>
       </div>
     </div>
@@ -209,7 +209,7 @@ function SmallDoctorCard({ doc, index }) {
           ))}
         </div>
 
-        <button className="doc-card__cta">Book Appointment →</button>
+        <a href="#Contactsection"><button className="doc-card__cta">Book Appointment</button></a>
       </div>
     </div>
   );
@@ -737,9 +737,11 @@ export default function DoctorSection() {
               </h3>
             </div>
             <div className="doc-bottom__actions">
+              <a href="#Contactsection">
               <button className="doc-btn--inverse">View All Doctors</button>
-              <button className="doc-btn--gold">Book Consultation</button>
+              <button className="doc-btn--gold">Book Consultation</button></a>
             </div>
+            
           </div>
 
         </div>

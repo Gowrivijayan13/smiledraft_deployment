@@ -1,12 +1,12 @@
 import "./Footer.css";
 import logodental from "../assets/logodental(1).png";
 const navLinks = [
-  { label: "Home", href: "#" },
+  { label: "Home", href: "#hero" },
   { label: "Treatments", href: "#treatments" },
-  { label: "Smile Stories", href: "#before-after" },
-  { label: "About", href: "#about" },
-  { label: "Reviews", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "Smile Stories", href: "#smile-stories" },
+  { label: "About", href: "#abt" },
+  { label: "Reviews", href: "#reviews" },
+  { label: "Contact", href: "#Contactsection" },
 ];
 
 const treatments = [
