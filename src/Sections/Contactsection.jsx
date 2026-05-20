@@ -1,50 +1,131 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import "./Contactsection.css";
 
 // ─── AUTO_CLOSE duration (ms) ─────────────────────────────────
 const AUTO_CLOSE_MS = 5000;
 
-// ─── Booking Confirmation Modal ───────────────────────────────
-const BookingModal = ({ isOpen, onClose }) => {
-  const [secondsLeft, setSecondsLeft] = useState(AUTO_CLOSE_MS / 1000);
 
-  useEffect(() => {
-    if (!isOpen) return;
+// ════════════════════════════════════════════════════════════
+// BookingModal
+// ════════════════════════════════════════════════════════════
+//
+//  ALL React hooks removed. Replaced with:
+//
+//  - Conditional render (if !isOpen return null) REMOVED.
+//    Modal is always in the DOM; visibility is toggled by
+//    adding/removing "booking-overlay--visible" directly.
+//
+//  - useState(secondsLeft) → plain JS variable `seconds`
+//    Countdown display updated via direct textContent writes
+//    to closeCountEl and autoCountEl DOM nodes.
+//
+//  - useEffect (timers + escape key + body overflow) →
+//    openModal() / closeModal() imperative functions called
+//    by the parent, wired through a shared `modalCtrl` object.
+//    Refs to the two countdown text nodes are populated by
+//    inline ref callbacks on the <span> elements.
+//
+// ════════════════════════════════════════════════════════════
 
-    setSecondsLeft(AUTO_CLOSE_MS / 1000);
+// modalCtrl is shared between BookingModal and Contactsection
+// so the parent can call modalCtrl.open() / modalCtrl.close()
+// without any state or prop drilling.
+const modalCtrl = {
+  open:  () => {},  // replaced by real fn once modal mounts
+  close: () => {},
+};
 
-    const closeTimer = setTimeout(() => {
-      onClose();
-    }, AUTO_CLOSE_MS);
+const BookingModal = () => {
 
-    const countdownTicker = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdownTicker);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // DOM node refs — populated by ref callbacks
+  let overlayEl    = null;
+  let closeCountEl = null;  // <span> showing "5" in close button
+  let autoCountEl  = null;  // <span> showing "5s" in auto-notice
 
-    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', handleKey);
+  // Timer handles
+  let closeTimer      = null;
+  let countdownTicker = null;
+
+  // ── REPLACED: useEffect cleanup & body overflow ───────────
+  //
+  //  OLD:
+  //    useEffect(() => {
+  //      if (!isOpen) return;
+  //      setSecondsLeft(AUTO_CLOSE_MS / 1000);
+  //      const closeTimer = setTimeout(() => onClose(), AUTO_CLOSE_MS);
+  //      const countdownTicker = setInterval(() => {
+  //        setSecondsLeft(prev => prev <= 1 ? 0 : prev - 1);
+  //      }, 1000);
+  //      const handleKey = (e) => { if (e.key==='Escape') onClose(); };
+  //      document.addEventListener('keydown', handleKey);
+  //      document.body.style.overflow = 'hidden';
+  //      return () => { clearTimeout(closeTimer); clearInterval(countdownTicker);
+  //                     document.removeEventListener('keydown', handleKey);
+  //                     document.body.style.overflow = ''; };
+  //    }, [isOpen, onClose]);
+  //
+  //  NEW: plain open/close functions stored on modalCtrl
+
+  function handleEscape(e) {
+    if (e.key === 'Escape') closeModal();
+  }
+
+  function openModal() {
+    if (!overlayEl) return;
+
+    // Reset countdown
+    let seconds = AUTO_CLOSE_MS / 1000;
+    if (closeCountEl) closeCountEl.textContent = seconds;
+    if (autoCountEl)  autoCountEl.textContent  = seconds + 's';
+
+    // Show overlay
+    overlayEl.classList.add('booking-overlay--visible');
     document.body.style.overflow = 'hidden';
 
-    return () => {
-      clearTimeout(closeTimer);
-      clearInterval(countdownTicker);
-      document.removeEventListener('keydown', handleKey);
-      document.body.style.overflow = '';
-    };
-  }, [isOpen, onClose]);
+    // Auto-close
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(closeModal, AUTO_CLOSE_MS);
 
-  if (!isOpen) return null;
+    // Countdown ticker — writes directly to DOM, no setState
+    clearInterval(countdownTicker);
+    countdownTicker = setInterval(() => {
+      seconds -= 1;
+      if (closeCountEl) closeCountEl.textContent = seconds;
+      if (autoCountEl)  autoCountEl.textContent  = seconds + 's';
+      if (seconds <= 0) clearInterval(countdownTicker);
+    }, 1000);
+
+    document.addEventListener('keydown', handleEscape);
+  }
+
+  function closeModal() {
+    clearTimeout(closeTimer);
+    clearInterval(countdownTicker);
+    document.removeEventListener('keydown', handleEscape);
+    if (overlayEl) overlayEl.classList.remove('booking-overlay--visible');
+    document.body.style.overflow = '';
+  }
+
+  // ── Overlay ref callback — exposes open/close to parent ───
+  function handleOverlayRef(el) {
+    if (!el) {
+      closeModal();          // cleanup on unmount
+      modalCtrl.open  = () => {};
+      modalCtrl.close = () => {};
+      return;
+    }
+    overlayEl       = el;
+    modalCtrl.open  = openModal;
+    modalCtrl.close = closeModal;
+  }
 
   return (
+    // ── REMOVED: if (!isOpen) return null ─────────────────
+    // Always in DOM; "booking-overlay--visible" class shows it.
     <div
-      className="booking-overlay booking-overlay--visible"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      className="booking-overlay"
+      ref={handleOverlayRef}
+      onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -60,8 +141,14 @@ const BookingModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Close button with countdown */}
-        <button className="booking-modal__close" onClick={onClose} aria-label="Close">
-          <span className="booking-modal__close-count">{secondsLeft}</span>
+        <button className="booking-modal__close" onClick={closeModal} aria-label="Close">
+          {/* ref callback replaces useState(secondsLeft) display */}
+          <span
+            className="booking-modal__close-count"
+            ref={(el) => { closeCountEl = el; }}
+          >
+            {AUTO_CLOSE_MS / 1000}
+          </span>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
@@ -76,7 +163,7 @@ const BookingModal = ({ isOpen, onClose }) => {
               stroke="url(#checkGold)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             <defs>
               <linearGradient id="checkGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#D4B06A"/>
+                <stop offset="0%"   stopColor="#D4B06A"/>
                 <stop offset="100%" stopColor="#F0D080"/>
               </linearGradient>
             </defs>
@@ -84,16 +171,13 @@ const BookingModal = ({ isOpen, onClose }) => {
           <div className="booking-modal__icon-glow" />
         </div>
 
-        {/* Eyebrow */}
         <p className="booking-modal__eyebrow">Request Received</p>
 
-        {/* Heading */}
         <h3 className="booking-modal__title" id="modal-title">
           You&rsquo;re on your way to a<br />
           <span className="booking-modal__title-accent">brighter smile</span> ✦
         </h3>
 
-        {/* Body */}
         <p className="booking-modal__body">
           Our team has received your consultation request and will reach out
           within <strong>24 hours</strong> to confirm your appointment time.
@@ -126,18 +210,21 @@ const BookingModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Auto-close notice */}
+        {/* Auto-close notice — ref callback replaces useState display */}
         <p className="booking-modal__auto-notice">
           This window closes automatically in{' '}
-          <span className="booking-modal__auto-count">{secondsLeft}s</span>
+          <span
+            className="booking-modal__auto-count"
+            ref={(el) => { autoCountEl = el; }}
+          >
+            {AUTO_CLOSE_MS / 1000}s
+          </span>
         </p>
 
-        {/* CTA */}
-        <button className="booking-modal__btn" onClick={onClose}>
+        <button className="booking-modal__btn" onClick={closeModal}>
           Back to Homepage
         </button>
 
-        {/* Decorative sparkles */}
         <div className="booking-modal__sparkle booking-modal__sparkle--1" />
         <div className="booking-modal__sparkle booking-modal__sparkle--2" />
         <div className="booking-modal__sparkle booking-modal__sparkle--3" />
@@ -146,29 +233,59 @@ const BookingModal = ({ isOpen, onClose }) => {
   );
 };
 
-// ─── Main Contact Section ─────────────────────────────────────
+
+// ════════════════════════════════════════════════════════════
+// Contactsection
+// ════════════════════════════════════════════════════════════
+//
+//  ALL React hooks removed. Replaced with:
+//
+//  - useState(formData) + handleChange → uncontrolled inputs.
+//    `value` and `onChange` props removed from every input.
+//    On submit, values are read from the form DOM via FormData.
+//    Form is reset with formEl.reset() after submission.
+//
+//  - useState(modalOpen) + setModalOpen(true/false) →
+//    modalCtrl.open() / modalCtrl.close() called directly.
+//    No prop drilling needed — modalCtrl is module-level.
+//
+// ════════════════════════════════════════════════════════════
+
 export default function Contactsection() {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    service: "",
-    message: "",
-  });
-  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
-  };
+  // DOM ref for the form — populated by ref callback
+  let formEl = null;
 
-  const handleSubmit = (e) => {
+  // ── REPLACED: useState(formData) + handleChange ───────────
+  //
+  //  OLD:
+  //    const [formData, setFormData] = useState({ name:"", phone:"", service:"", message:"" });
+  //    const handleChange = (e) =>
+  //      setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
+  //    <input value={formData.name} onChange={handleChange} ... />
+  //
+  //  NEW: uncontrolled inputs (no value/onChange props).
+  //    Values read via FormData on submit; form reset via formEl.reset().
+
+  // ── REPLACED: useState(modalOpen) + setModalOpen ──────────
+  //
+  //  OLD:
+  //    const [modalOpen, setModalOpen] = useState(false);
+  //    const handleSubmit = (e) => { e.preventDefault(); setModalOpen(true); ... };
+  //    <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+  //
+  //  NEW: modalCtrl.open() / modalCtrl.close() called directly.
+  //    BookingModal manages its own visibility imperatively.
+
+  function handleSubmit(e) {
     e.preventDefault();
-    setModalOpen(true);
-    // Reset form after submission
-    setFormData({ name: "", phone: "", service: "", message: "" });
-  };
+    modalCtrl.open();
+    if (formEl) formEl.reset(); // reset uncontrolled inputs
+  }
 
   return (
     <section className="contact-section" id="Contactsection">
+
       {/* ── Geometric tooth pattern background ── */}
       <div className="contact-bg-pattern" aria-hidden="true">
         <svg className="contact-bg-svg" viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
@@ -178,35 +295,30 @@ export default function Contactsection() {
                  M12 4 c4.4 0 8 3.8 8 9 c0 3.3-1.7 6.2-4.2 7.8 L12 24 l-3.8-3.2 C5.7 19.2 4 16.3 4 13 C4 7.8 7.6 4 12 4 z"
             />
             <path id="diamond" d="M6 0 L12 6 L6 12 L0 6 Z" />
-            <path id="plus" d="M4 0 L4 3 L7 3 L7 5 L4 5 L4 8 L2 8 L2 5 L-1 5 L-1 3 L2 3 L2 0 Z" />
+            <path id="plus"    d="M4 0 L4 3 L7 3 L7 5 L4 5 L4 8 L2 8 L2 5 L-1 5 L-1 3 L2 3 L2 0 Z" />
           </defs>
-
-          <use href="#tooth" x="60"   y="60"  transform="scale(2.2) translate(0,0)"   opacity="0.045" fill="#17324D"/>
+          <use href="#tooth" x="60"   y="60"  transform="scale(2.2) translate(0,0)"    opacity="0.045" fill="#17324D"/>
           <use href="#tooth" x="280"  y="30"  transform="scale(1.6) translate(100,15)" opacity="0.035" fill="#17324D"/>
           <use href="#tooth" x="540"  y="80"  transform="scale(2.8) translate(160,25)" opacity="0.03"  fill="#D4B06A"/>
           <use href="#tooth" x="820"  y="20"  transform="scale(2.0) translate(340,8)"  opacity="0.04"  fill="#17324D"/>
           <use href="#tooth" x="1100" y="50"  transform="scale(1.8) translate(520,20)" opacity="0.03"  fill="#D4B06A"/>
           <use href="#tooth" x="1300" y="90"  transform="scale(2.4) translate(600,30)" opacity="0.04"  fill="#17324D"/>
-
           <use href="#tooth" x="140"  y="220" transform="scale(1.5) translate(60,120)" opacity="0.05"  fill="#17324D"/>
           <use href="#tooth" x="380"  y="200" transform="scale(3.0) translate(110,60)" opacity="0.025" fill="#D4B06A"/>
           <use href="#tooth" x="660"  y="240" transform="scale(1.8) translate(280,100)"opacity="0.045" fill="#17324D"/>
           <use href="#tooth" x="960"  y="180" transform="scale(2.2) translate(400,70)" opacity="0.035" fill="#D4B06A"/>
           <use href="#tooth" x="1200" y="230" transform="scale(1.6) translate(560,100)"opacity="0.04"  fill="#17324D"/>
-
           <use href="#tooth" x="80"   y="420" transform="scale(2.6) translate(20,170)" opacity="0.03"  fill="#D4B06A"/>
           <use href="#tooth" x="320"  y="400" transform="scale(1.4) translate(160,190)"opacity="0.05"  fill="#17324D"/>
           <use href="#tooth" x="580"  y="450" transform="scale(2.0) translate(230,165)"opacity="0.04"  fill="#17324D"/>
           <use href="#tooth" x="880"  y="380" transform="scale(1.7) translate(400,170)"opacity="0.045" fill="#D4B06A"/>
           <use href="#tooth" x="1140" y="430" transform="scale(2.4) translate(500,165)"opacity="0.03"  fill="#17324D"/>
           <use href="#tooth" x="1360" y="400" transform="scale(1.5) translate(650,170)"opacity="0.04"  fill="#D4B06A"/>
-
           <use href="#tooth" x="200"  y="610" transform="scale(1.9) translate(70,265)" opacity="0.04"  fill="#17324D"/>
           <use href="#tooth" x="470"  y="630" transform="scale(2.5) translate(160,240)"opacity="0.03"  fill="#D4B06A"/>
           <use href="#tooth" x="750"  y="600" transform="scale(1.6) translate(340,270)"opacity="0.045" fill="#17324D"/>
           <use href="#tooth" x="1020" y="640" transform="scale(2.2) translate(450,255)"opacity="0.035" fill="#D4B06A"/>
           <use href="#tooth" x="1280" y="610" transform="scale(1.8) translate(590,260)"opacity="0.04"  fill="#17324D"/>
-
           <use href="#diamond" x="180"  y="130" transform="scale(1.8) translate(70,50)"   opacity="0.07" fill="#D4B06A"/>
           <use href="#diamond" x="500"  y="340" transform="scale(1.4) translate(240,150)" opacity="0.06" fill="#17324D"/>
           <use href="#diamond" x="800"  y="110" transform="scale(2.0) translate(360,40)"  opacity="0.05" fill="#D4B06A"/>
@@ -215,13 +327,11 @@ export default function Contactsection() {
           <use href="#diamond" x="90"   y="540" transform="scale(1.5) translate(40,230)"  opacity="0.06" fill="#D4B06A"/>
           <use href="#diamond" x="690"  y="520" transform="scale(1.8) translate(310,220)" opacity="0.05" fill="#17324D"/>
           <use href="#diamond" x="1180" y="560" transform="scale(1.4) translate(570,240)" opacity="0.06" fill="#D4B06A"/>
-
           <use href="#plus" x="260"  y="160" transform="scale(2) translate(85,52)"    opacity="0.08" fill="#D4B06A"/>
           <use href="#plus" x="720"  y="70"  transform="scale(1.5) translate(310,24)" opacity="0.07" fill="#17324D"/>
           <use href="#plus" x="1000" y="460" transform="scale(2) translate(430,190)"  opacity="0.08" fill="#D4B06A"/>
           <use href="#plus" x="430"  y="560" transform="scale(1.8) translate(170,230)"opacity="0.07" fill="#17324D"/>
           <use href="#plus" x="1250" y="360" transform="scale(1.6) translate(590,145)"opacity="0.08" fill="#D4B06A"/>
-
           <g fill="none" stroke="#17324D" strokeWidth="0.8" opacity="0.06">
             <use href="#tooth" x="450"  y="120" transform="scale(3.5) translate(110,28)"/>
             <use href="#tooth" x="1080" y="550" transform="scale(3.2) translate(300,180)"/>
@@ -231,13 +341,12 @@ export default function Contactsection() {
             <use href="#tooth" x="750"  y="650" transform="scale(2.6) translate(250,230)"/>
             <use href="#tooth" x="1320" y="650" transform="scale(2.0) translate(580,270)"/>
           </g>
-
           <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#D4B06A" stopOpacity="0.06"/>
+            <stop offset="0%"   stopColor="#D4B06A" stopOpacity="0.06"/>
             <stop offset="100%" stopColor="#D4B06A" stopOpacity="0"/>
           </radialGradient>
           <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#17324D" stopOpacity="0.05"/>
+            <stop offset="0%"   stopColor="#17324D" stopOpacity="0.05"/>
             <stop offset="100%" stopColor="#17324D" stopOpacity="0"/>
           </radialGradient>
           <ellipse cx="1100" cy="150" rx="340" ry="260" fill="url(#glow1)"/>
@@ -247,7 +356,8 @@ export default function Contactsection() {
       </div>
 
       <div className="contact-container">
-        {/* Left — Info Panel */}
+
+        {/* ── Left — Info Panel ── */}
         <div className="contact-info">
           <span className="contact-eyebrow">Get In Touch</span>
           <div className="contact-gold-line" />
@@ -262,12 +372,7 @@ export default function Contactsection() {
           </p>
 
           <div className="contact-info-cards">
-            <a
-              href="https://maps.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-info-card"
-            >
+            <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="contact-info-card">
               <div className="contact-info-card__icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
@@ -320,22 +425,26 @@ export default function Contactsection() {
           </div>
         </div>
 
-        {/* Right — Form Panel */}
+        {/* ── Right — Form Panel ── */}
         <div className="contact-form-wrap">
           <div className="contact-form-inner">
             <p className="contact-form-title">Book a Consultation</p>
 
-            <form className="contact-form" onSubmit={handleSubmit}>
+            {/* ref callback replaces useState(formData) form ref */}
+            <form
+              className="contact-form"
+              ref={(el) => { formEl = el; }}
+              onSubmit={handleSubmit}
+            >
               <div className="contact-form-row">
                 <div className="contact-form-field">
                   <label className="contact-form-label">Full Name</label>
+                  {/* REMOVED: value={formData.name} onChange={handleChange} */}
                   <input
                     className="contact-form-input"
                     type="text"
                     name="name"
                     placeholder="Your name"
-                    value={formData.name}
-                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -346,8 +455,6 @@ export default function Contactsection() {
                     type="tel"
                     name="phone"
                     placeholder="+91 XXXXX XXXXX"
-                    value={formData.phone}
-                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -355,11 +462,11 @@ export default function Contactsection() {
 
               <div className="contact-form-field">
                 <label className="contact-form-label">Service Interested In</label>
+                {/* REMOVED: value={formData.service} onChange={handleChange} */}
                 <select
                   className="contact-form-input contact-form-select"
                   name="service"
-                  value={formData.service}
-                  onChange={handleChange}
+                  defaultValue=""
                 >
                   <option value="">Select a treatment</option>
                   <option value="cleaning">Teeth Cleaning</option>
@@ -374,12 +481,11 @@ export default function Contactsection() {
 
               <div className="contact-form-field">
                 <label className="contact-form-label">Message (Optional)</label>
+                {/* REMOVED: value={formData.message} onChange={handleChange} */}
                 <textarea
                   className="contact-form-input contact-form-textarea"
                   name="message"
                   placeholder="Tell us about your concern..."
-                  value={formData.message}
-                  onChange={handleChange}
                   rows={4}
                 />
               </div>
@@ -407,8 +513,9 @@ export default function Contactsection() {
         </div>
       </div>
 
-      {/* Booking Confirmation Modal */}
-      <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      {/* REMOVED: isOpen={modalOpen} onClose={() => setModalOpen(false)} props */}
+      {/* BookingModal manages its own visibility via modalCtrl */}
+      <BookingModal />
     </section>
   );
 }

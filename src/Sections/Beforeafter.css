@@ -1,22 +1,17 @@
 /* ============================================================
    SMILECRAFT — Before / After Section
-   BeforeAfter.css
-   Import after: variables.css → global.css → BeforeAfter.css
-   All tokens from variables.css only. No hardcoded colors.
+   BeforeAfter.css  (no changes needed — image fix is in JSX)
    ============================================================ */
 
-
 /* ── SECTION WRAPPER ──────────────────────────────────────── */
-
 .ba {
   position: relative;
   padding-block: var(--section-padding-y);
   padding-inline: var(--container-padding);
-  background-color: var(--color-navy-dark);   /* Deep navy — premium dark section */
+  background-color: var(--color-navy-dark);
   overflow: hidden;
 }
 
-/* Soft gold glow blob — bottom right */
 .ba__bg-blob {
   position: absolute;
   bottom: -160px;
@@ -24,18 +19,12 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(212, 176, 106, 0.08) 0%,
-    transparent 65%
-  );
+  background: radial-gradient(circle, rgba(212,176,106,0.08) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 
-
 /* ── HEADER ───────────────────────────────────────────────── */
-
 .ba__header {
   position: relative;
   z-index: 1;
@@ -43,19 +32,16 @@
   max-width: var(--container-narrow);
   margin-inline: auto;
   margin-bottom: var(--space-10);
-
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
-
 .ba--visible .ba__header {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.05s;
 }
 
-/* Eyebrow */
 .ba__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -68,7 +54,6 @@
   color: var(--color-gold);
   margin-bottom: var(--space-4);
 }
-
 .ba__eyebrow::before,
 .ba__eyebrow::after {
   content: '';
@@ -79,7 +64,6 @@
   opacity: 0.5;
 }
 
-/* Heading */
 .ba__heading {
   font-family: var(--font-display);
   font-size: clamp(var(--text-3xl), 4.5vw, var(--text-4xl));
@@ -89,14 +73,11 @@
   letter-spacing: var(--tracking-tight);
   margin: 0 0 var(--space-4);
 }
-
-/* "Care Can Make" — italic gold */
 .ba__heading-accent {
   font-style: italic;
   color: var(--color-gold);
 }
 
-/* Gold line */
 .ba__gold-line {
   width: 56px;
   height: 2px;
@@ -105,19 +86,16 @@
   margin: 0 auto var(--space-5);
 }
 
-/* Subtext */
 .ba__subtext {
   font-family: var(--font-body);
   font-size: var(--text-md);
-  color: rgba(255, 255, 255, 0.60);
+  color: rgba(255,255,255,0.60);
   line-height: var(--leading-relaxed);
   max-width: 46ch;
   margin-inline: auto;
 }
 
-
 /* ── CATEGORY TABS ────────────────────────────────────────── */
-
 .ba__tabs {
   position: relative;
   z-index: 1;
@@ -127,12 +105,10 @@
   gap: var(--space-2);
   flex-wrap: wrap;
   margin-bottom: var(--space-8);
-
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
-
 .ba--visible .ba__tabs {
   opacity: 1;
   transform: translateY(0);
@@ -144,9 +120,9 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-wide);
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: var(--radius-full);
   padding: var(--space-2) var(--space-5);
   cursor: pointer;
@@ -157,15 +133,12 @@
     box-shadow       var(--duration-base) var(--ease-out),
     transform        var(--duration-fast) var(--ease-spring);
 }
-
 .ba__tab:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.25);
   transform: translateY(-1px);
 }
-
-/* Active tab — gold */
 .ba__tab--active {
   color: var(--color-navy);
   background-color: var(--color-gold);
@@ -173,16 +146,13 @@
   box-shadow: var(--shadow-gold);
   font-weight: var(--weight-semibold);
 }
-
 .ba__tab--active:hover {
   background-color: var(--color-gold-dark);
   border-color: var(--color-gold-dark);
   color: var(--color-navy);
 }
 
-
 /* ── SLIDER WRAPPER ───────────────────────────────────────── */
-
 .ba__slider-wrap {
   position: relative;
   z-index: 1;
@@ -191,21 +161,17 @@
   border-radius: var(--radius-2xl);
   overflow: hidden;
   box-shadow: var(--shadow-xl);
-
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
-
 .ba--visible .ba__slider-wrap {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 0.25s;
 }
 
-
 /* ── DRAG SLIDER ──────────────────────────────────────────── */
-
 .ba-slider {
   position: relative;
   width: 100%;
@@ -215,12 +181,11 @@
   touch-action: pan-y;
   cursor: ew-resize;
 }
-
 .ba-slider--dragging {
   cursor: grabbing;
 }
 
-/* Images — fill the slider */
+/* After image — full-width base layer */
 .ba-slider__img {
   position: absolute;
   inset: 0;
@@ -232,40 +197,40 @@
   pointer-events: none;
 }
 
-/* Before image — clipped container */
+/* Before image — sits inside a clipped container */
 .ba-slider__before-wrap {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  /* width is driven by inline style (position %) */
-  width: 50%;
+  /* width driven by inline style */
 }
 
-.ba-slider__img--before {
-  /* Stretch full width so clipping reveals naturally */
-  width:auto;
-  min-width: 50vw;   /* ensure image fills even when container is narrow */
-}
+/*
+  Both images must be absolutely positioned and fill 100%
+  so that object-fit: cover works correctly for all aspect ratios.
+  The min-width trick from the original caused misalignment on
+  narrow containers — removing it fixes the before/after alignment.
+*/
+.ba-slider__img--before,
 .ba-slider__img--after {
-  /* Stretch full width so clipping reveals naturally */
-  width:auto;
-  min-width: 50vw;   /* ensure image fills even when container is narrow */
+  width: 100%;
+  min-width: unset;
 }
 
-/* Drag line */
+/* Drag divider line */
 .ba-slider__line {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 2px;
   background-color: #fff;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.40);
+  box-shadow: 0 0 12px rgba(0,0,0,0.40);
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 3;
 }
 
-/* Drag handle — gold circle with arrows */
+/* Drag handle */
 .ba-slider__handle {
   position: absolute;
   top: 50%;
@@ -274,7 +239,7 @@
   border-radius: 50%;
   background-color: var(--color-gold);
   border: 3px solid #fff;
-  box-shadow: var(--shadow-gold), 0 0 0 4px rgba(212, 176, 106, 0.25);
+  box-shadow: var(--shadow-gold), 0 0 0 4px rgba(212,176,106,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,30 +247,28 @@
   cursor: ew-resize;
   z-index: 4;
   color: var(--color-navy);
-  transition: box-shadow var(--duration-base) var(--ease-out),
-              transform   var(--duration-fast) var(--ease-spring);
+  transition:
+    box-shadow var(--duration-base) var(--ease-out),
+    transform  var(--duration-fast) var(--ease-spring);
   outline: none;
 }
-
 .ba-slider__handle:focus-visible {
-  box-shadow: var(--shadow-gold), 0 0 0 6px rgba(212, 176, 106, 0.45);
+  box-shadow: var(--shadow-gold), 0 0 0 6px rgba(212,176,106,0.45);
 }
-
 .ba-slider--dragging .ba-slider__handle {
-  box-shadow: var(--shadow-gold-hover), 0 0 0 6px rgba(212, 176, 106, 0.30);
+  box-shadow: var(--shadow-gold-hover), 0 0 0 6px rgba(212,176,106,0.30);
   transform: translate(-50%, -50%) scale(1.08);
 }
 
-/* Hint animation — nudges left-right once to show it's draggable */
+/* Hint nudge animation */
 .ba-slider__handle--hint {
   animation: handleHint 1s var(--ease-spring) 1s both;
 }
-
 @keyframes handleHint {
-  0%   { transform: translate(-50%, -50%) translateX(0); }
+  0%   { transform: translate(-50%, -50%) translateX(0);    }
   25%  { transform: translate(-50%, -50%) translateX(-12px); }
-  75%  { transform: translate(-50%, -50%) translateX(12px); }
-  100% { transform: translate(-50%, -50%) translateX(0); }
+  75%  { transform: translate(-50%, -50%) translateX(12px);  }
+  100% { transform: translate(-50%, -50%) translateX(0);    }
 }
 
 /* Before / After labels */
@@ -318,7 +281,7 @@
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   color: #fff;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0,0,0,0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   padding: var(--space-1) var(--space-3);
@@ -326,13 +289,10 @@
   z-index: 5;
   pointer-events: none;
 }
-
-.ba-slider__label--before { left: var(--space-4); }
+.ba-slider__label--before { left:  var(--space-4); }
 .ba-slider__label--after  { right: var(--space-4); }
 
-
-/* ── FOOTER CONTENT ───────────────────────────────────────── */
-
+/* ── FOOTER ───────────────────────────────────────────────── */
 .ba__footer {
   position: relative;
   z-index: 1;
@@ -344,13 +304,11 @@
   margin-inline: auto;
   margin-top: var(--space-10);
   padding-top: var(--space-8);
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
-
+  border-top: 1px solid rgba(255,255,255,0.10);
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
-
 .ba--visible .ba__footer {
   opacity: 1;
   transform: translateY(0);
@@ -363,7 +321,6 @@
   gap: var(--space-2);
   max-width: 46ch;
 }
-
 .ba__footer-heading {
   font-family: var(--font-display);
   font-size: var(--text-xl);
@@ -371,16 +328,14 @@
   color: #fff;
   margin: 0;
 }
-
 .ba__footer-body {
   font-family: var(--font-body);
   font-size: var(--text-base);
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255,255,255,0.55);
   line-height: var(--leading-relaxed);
   margin: 0;
 }
 
-/* CTA button */
 .ba__cta {
   display: inline-flex;
   align-items: center;
@@ -388,63 +343,29 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-
 .ba__cta svg:last-child {
   transition: transform var(--duration-base) var(--ease-spring);
 }
-
 .ba__cta:hover svg:last-child {
   transform: translateX(4px);
 }
 
-
 /* ── RESPONSIVE ───────────────────────────────────────────── */
-
 @media (max-width: 768px) {
-  .ba {
-    padding-block: var(--section-padding-y-sm);
-  }
-
-  .ba__slider-wrap {
-    border-radius: var(--radius-xl);
-  }
-
-  .ba-slider {
-    aspect-ratio: 4 / 3;
-  }
-
-  .ba-slider__handle {
-    width: 44px;
-    height: 44px;
-  }
-
+  .ba { padding-block: var(--section-padding-y-sm); }
+  .ba__slider-wrap { border-radius: var(--radius-xl); }
+  .ba-slider { aspect-ratio: 4 / 3; }
+  .ba-slider__handle { width: 44px; height: 44px; }
   .ba__footer {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-6);
   }
-
-  .ba__cta {
-    width: 100%;
-    justify-content: center;
-  }
+  .ba__cta { width: 100%; justify-content: center; }
 }
-
 @media (max-width: 480px) {
-  .ba__tabs {
-    gap: var(--space-1);
-  }
-
-  .ba__tab {
-    font-size: var(--text-xs);
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .ba-slider {
-    aspect-ratio: 1 / 1;
-  }
-
-  .ba__footer-heading {
-    font-size: var(--text-lg);
-  }
+  .ba__tabs { gap: var(--space-1); }
+  .ba__tab { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
+  .ba-slider { aspect-ratio: 1 / 1; }
+  .ba__footer-heading { font-size: var(--text-lg); }
 }

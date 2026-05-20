@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import React from "react";
 import "./Choose.css";
+
+// ── Data ───────────────────────────────────────────────────
+
 const reasons = [
   {
     id: 1,
@@ -63,50 +66,77 @@ const reasons = [
   },
 ];
 
-function useIntersect(threshold = 0.15) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
+
+// ════════════════════════════════════════════════════════════
+// FeatureCard Component
+// ════════════════════════════════════════════════════════════
+//
+//  REPLACED:
+//    useIntersect() custom hook  →  ref callback with IntersectionObserver
+//    useState(false) for visible →  direct DOM classList toggle
+//    useState(null) for active   →  plain JS variable + DOM classList toggle
+//
+// ════════════════════════════════════════════════════════════
+
+function FeatureCard({ item, index }) {
+  const isGold = index % 2 !== 0;
+  const delay  = index * 80;
+
+  // REPLACED: useIntersect hook → ref callback
+  //
+  //  OLD:
+  //    const [ref, visible] = useIntersect(0.1);
+  //    <div ref={ref} className={`why-card ${visible ? "why-card--visible" : ""}`}>
+  //
+  //  NEW: ref callback adds the class directly on the DOM node
+
+  function handleCardRef(el) {
     if (!el) return;
-    const obs = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
+          el.classList.add("why-card--visible");
+          observer.disconnect();
         }
       },
-      { threshold },
+      { threshold: 0.1 }
     );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, visible];
-}
+    observer.observe(el);
+  }
 
-function FeatureCard({ item, index, active, onHover }) {
-  const isGold = index % 2 !== 0;
-  const delay = index * 80;
-  const [ref, visible] = useIntersect(0.1);
+  // REPLACED: onHover(item.id) / onHover(null) + activeCard state
+  //           → direct classList toggle on the card DOM node
+  //
+  //  OLD:
+  //    onMouseEnter={() => onHover(item.id)}
+  //    onMouseLeave={() => onHover(null)}
+  //    className={`why-card ${active === item.id ? "why-card--active" : ""}`}
+  //
+  //  NEW:
+
+  function onMouseEnter(e) {
+    e.currentTarget.classList.add("why-card--active");
+  }
+  function onMouseLeave(e) {
+    e.currentTarget.classList.remove("why-card--active");
+  }
 
   return (
     <div
-      ref={ref}
-      className={`why-card ${active === item.id ? "why-card--active" : ""} ${visible ? "why-card--visible" : ""}`}
+      ref={handleCardRef}
+      className="why-card"
       style={{ animationDelay: `${delay}ms`, "--card-delay": `${delay}ms` }}
-      onMouseEnter={() => onHover(item.id)}
-      onMouseLeave={() => onHover(null)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
-      {/* Gold line top accent */}
+      {/* Gold top line */}
       <div className="why-card__line" />
 
       {/* Top row: icon + stat */}
       <div className="why-card__top">
         <span className="why-card__icon">{item.icon}</span>
         <div className="why-card__stat-wrap">
-          <span
-            className={`why-card__stat ${isGold ? "why-card__stat--gold" : ""}`}
-          >
+          <span className={`why-card__stat ${isGold ? "why-card__stat--gold" : ""}`}>
             {item.stat}
           </span>
           <span className="why-card__stat-label">{item.statLabel}</span>
@@ -138,16 +168,43 @@ function FeatureCard({ item, index, active, onHover }) {
   );
 }
 
+
+// ════════════════════════════════════════════════════════════
+// WhyChooseUs — Main Section
+// ════════════════════════════════════════════════════════════
+//
+//  REPLACED:
+//    useState(null)  for activeCard  →  removed entirely (handled inside FeatureCard)
+//    useIntersect()  for header      →  ref callback with IntersectionObserver
+//
+// ════════════════════════════════════════════════════════════
+
 export default function WhyChooseUs() {
-  const [activeCard, setActiveCard] = useState(null);
-  const [headerRef, headerVisible] = useIntersect(0.2);
+
+  // REPLACED: const [headerRef, headerVisible] = useIntersect(0.2);
+  //           className={`why-header${headerVisible ? " visible" : ""}`}
+  //
+  //  NEW: ref callback adds "visible" class directly
+
+  function handleHeaderRef(el) {
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+  }
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
 
-        /* === Root Tokens (from variables.css) === */
         :root {
           --color-navy: #17324D;
           --color-navy-dark: #0F2236;
@@ -176,7 +233,6 @@ export default function WhyChooseUs() {
           --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
         }
 
-        /* === Section wrapper === */
         .why-section {
           background: var(--color-ash);
           padding: 96px 0 112px;
@@ -184,8 +240,6 @@ export default function WhyChooseUs() {
           overflow: hidden;
           font-family: var(--font-body);
         }
-
-        /* Decorative background element */
         .why-section::before {
           content: '';
           position: absolute;
@@ -217,7 +271,6 @@ export default function WhyChooseUs() {
           padding: 0 clamp(1.25rem, 4vw, 3rem);
         }
 
-        /* === Header === */
         .why-header {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -267,9 +320,7 @@ export default function WhyChooseUs() {
           color: var(--color-gold);
         }
 
-        .why-header-right {
-          padding-bottom: 6px;
-        }
+        .why-header-right { padding-bottom: 6px; }
         .why-subtext {
           font-size: 1.0625rem;
           color: var(--color-charcoal-mid);
@@ -309,7 +360,6 @@ export default function WhyChooseUs() {
           transform: translateX(4px);
         }
 
-        /* === Cards grid === */
         .why-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -318,7 +368,6 @@ export default function WhyChooseUs() {
           z-index: 1;
         }
 
-        /* === Individual card === */
         .why-card {
           background: var(--color-white);
           border-radius: 24px;
@@ -350,8 +399,6 @@ export default function WhyChooseUs() {
           border-color: var(--color-gold-border);
           transform: translateY(-6px) !important;
         }
-
-        /* Hover shimmer wash */
         .why-card::before {
           content: '';
           position: absolute;
@@ -363,11 +410,8 @@ export default function WhyChooseUs() {
           pointer-events: none;
         }
         .why-card:hover::before,
-        .why-card--active::before {
-          opacity: 1;
-        }
+        .why-card--active::before { opacity: 1; }
 
-        /* Gold top line */
         .why-card__line {
           position: absolute;
           top: 0;
@@ -380,27 +424,16 @@ export default function WhyChooseUs() {
           transition: opacity 0.35s;
         }
         .why-card:hover .why-card__line,
-        .why-card--active .why-card__line {
-          opacity: 1;
-        }
+        .why-card--active .why-card__line { opacity: 1; }
 
-        /* Top row */
         .why-card__top {
           display: flex;
           align-items: center;
           justify-content: space-between;
           margin-bottom: 20px;
         }
-        .why-card__icon {
-          font-size: 1.75rem;
-          line-height: 1;
-          display: block;
-        }
-        .why-card__stat-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-        }
+        .why-card__icon { font-size: 1.75rem; line-height: 1; display: block; }
+        .why-card__stat-wrap { display: flex; flex-direction: column; align-items: flex-end; }
         .why-card__stat {
           font-family: var(--font-display);
           font-size: 1.75rem;
@@ -408,9 +441,7 @@ export default function WhyChooseUs() {
           color: var(--color-navy);
           line-height: 1;
         }
-        .why-card__stat--gold {
-          color: var(--color-gold-dark);
-        }
+        .why-card__stat--gold { color: var(--color-gold-dark); }
         .why-card__stat-label {
           font-size: 0.6rem;
           font-weight: 600;
@@ -420,7 +451,6 @@ export default function WhyChooseUs() {
           margin-top: 2px;
         }
 
-        /* Eyebrow */
         .why-card__eyebrow {
           font-size: 0.6rem;
           font-weight: 600;
@@ -429,8 +459,6 @@ export default function WhyChooseUs() {
           color: var(--color-gold-dark);
           margin: 0 0 8px;
         }
-
-        /* Title */
         .why-card__title {
           font-family: var(--font-display);
           font-size: 1.35rem;
@@ -440,8 +468,6 @@ export default function WhyChooseUs() {
           margin: 0 0 12px;
           letter-spacing: -0.01em;
         }
-
-        /* Body */
         .why-card__body {
           font-size: 0.9rem;
           color: var(--color-charcoal-mid);
@@ -449,8 +475,6 @@ export default function WhyChooseUs() {
           margin: 0;
           flex: 1;
         }
-
-        /* Arrow */
         .why-card__arrow {
           display: flex;
           align-items: center;
@@ -462,12 +486,8 @@ export default function WhyChooseUs() {
           transition: opacity 0.25s, transform 0.25s var(--ease-spring);
         }
         .why-card:hover .why-card__arrow,
-        .why-card--active .why-card__arrow {
-          opacity: 1;
-          transform: translateX(0);
-        }
+        .why-card--active .why-card__arrow { opacity: 1; transform: translateX(0); }
 
-        /* === Bottom trust band === */
         .why-trust {
           margin-top: 64px;
           padding: 32px 40px;
@@ -489,84 +509,35 @@ export default function WhyChooseUs() {
           background: radial-gradient(ellipse 60% 80% at 50% 110%, rgba(212,176,106,0.12) 0%, transparent 70%);
           pointer-events: none;
         }
+        .why-trust__item { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.85); }
+        .why-trust__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-gold); flex-shrink: 0; }
+        .why-trust__text { font-size: 0.875rem; letter-spacing: 0.02em; }
+        .why-trust__text strong { color: #fff; font-weight: 600; }
+        .why-trust__divider { width: 1px; height: 32px; background: rgba(255,255,255,0.12); flex-shrink: 0; }
 
-        .why-trust__item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          color: rgba(255,255,255,0.85);
-        }
-        .why-trust__dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: var(--color-gold);
-          flex-shrink: 0;
-        }
-        .why-trust__text {
-          font-size: 0.875rem;
-          letter-spacing: 0.02em;
-        }
-        .why-trust__text strong {
-          color: #fff;
-          font-weight: 600;
-        }
-
-        .why-trust__divider {
-          width: 1px;
-          height: 32px;
-          background: rgba(255,255,255,0.12);
-          flex-shrink: 0;
-        }
-
-        /* === Responsive === */
         @media (max-width: 1024px) {
-          .why-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-          .why-header {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-          .why-header-right {
-            padding-bottom: 0;
-          }
+          .why-grid { grid-template-columns: repeat(2, 1fr); }
+          .why-header { grid-template-columns: 1fr; gap: 20px; }
+          .why-header-right { padding-bottom: 0; }
         }
-
         @media (max-width: 640px) {
-          .why-section {
-            padding: 64px 0 80px;
-          }
-          .why-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-          }
-          .why-trust {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 24px;
-          }
-          .why-trust__divider {
-            display: none;
-          }
-          .why-card {
-            padding: 28px 24px 24px;
-          }
+          .why-section { padding: 64px 0 80px; }
+          .why-grid { grid-template-columns: 1fr; gap: 16px; }
+          .why-trust { flex-direction: column; align-items: flex-start; padding: 24px; }
+          .why-trust__divider { display: none; }
+          .why-card { padding: 28px 24px 24px; }
         }
       `}</style>
 
       <section className="why-section" id="technology">
         <div className="why-container">
-          {/* Header */}
-          <div
-            ref={headerRef}
-            className={`why-header${headerVisible ? " visible" : ""}`}
-          >
+
+          {/* Header — ref callback replaces useIntersect hook */}
+          <div ref={handleHeaderRef} className="why-header">
             <div>
               <p className="why-eyebrow">Why Choose Us</p>
               <h2 className="why-heading">
-                Modern Dentistry,
-                <br />
+                Modern Dentistry,<br />
                 <em>Human Care</em>
               </h2>
             </div>
@@ -582,15 +553,13 @@ export default function WhyChooseUs() {
             </div>
           </div>
 
-          {/* Cards */}
+          {/* Cards — no activeCard state needed anymore */}
           <div className="why-grid">
             {reasons.map((item, i) => (
               <FeatureCard
                 key={item.id}
                 item={item}
                 index={i}
-                active={activeCard}
-                onHover={setActiveCard}
               />
             ))}
           </div>
@@ -599,32 +568,25 @@ export default function WhyChooseUs() {
           <div className="why-trust">
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text">
-                <strong>10,000+</strong> Smiles Transformed
-              </p>
+              <p className="why-trust__text"><strong>10,000+</strong> Smiles Transformed</p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text">
-                <strong>15+ Years</strong> Clinical Experience
-              </p>
+              <p className="why-trust__text"><strong>15+ Years</strong> Clinical Experience</p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text">
-                <strong>4.9★</strong> Patient Satisfaction
-              </p>
+              <p className="why-trust__text"><strong>4.9★</strong> Patient Satisfaction</p>
             </div>
             <div className="why-trust__divider" />
             <div className="why-trust__item">
               <div className="why-trust__dot" />
-              <p className="why-trust__text">
-                <strong>Fear-Free</strong> Dental Care
-              </p>
+              <p className="why-trust__text"><strong>Fear-Free</strong> Dental Care</p>
             </div>
           </div>
+
         </div>
       </section>
     </>

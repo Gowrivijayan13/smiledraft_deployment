@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import "./About.css";
 import aboutimg from "../assets/aboutimg.png";
 
@@ -27,32 +26,40 @@ const SparkleIcon = () => (
   </svg>
 );
 
-// ── Key highlights shown in the left content block ─────────
+// ── Data ───────────────────────────────────────────────────
+
 const highlights = [
   "No rushed appointments or unnecessary treatments",
   "Modern technology for comfortable, accurate care",
   "Transparent plans with honest recommendations",
 ];
 
-// ── Small stat cards floating over the image (right side) ──
 const stats = [
   { number: "10K+", label: "Smiles Transformed" },
   { number: "15+",  label: "Years of Experience" },
   { number: "4.9★", label: "Patient Satisfaction" },
 ];
 
-
 // ── Main Component ─────────────────────────────────────────
 
 export default function AboutSection({ onLearnMore }) {
 
-  // Fade-up on scroll using IntersectionObserver
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-
+  // ── REPLACED: useRef + useEffect with IntersectionObserver ──
+  //
+  //  OLD (React):
+  //    const sectionRef = useRef(null);
+  //    useEffect(() => {
+  //      const el = sectionRef.current;
+  //      const observer = new IntersectionObserver(([entry]) => {
+  //        if (entry.isIntersecting) { el.classList.add("about--visible"); observer.disconnect(); }
+  //      }, { threshold: 0.15 });
+  //      observer.observe(el);
+  //      return () => observer.disconnect();
+  //    }, []);
+  //
+  //  NEW (plain JS — runs once when the component mounts via ref callback):
+  function handleSectionRef(el) {
+    if (!el) return;                                      // unmount guard
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -62,42 +69,36 @@ export default function AboutSection({ onLearnMore }) {
       },
       { threshold: 0.15 }
     );
-
     observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  }
+  // ────────────────────────────────────────────────────────────
 
   return (
     <section
-     id="abt"
+      id="abt"
       className="about"
-      ref={sectionRef}
+      ref={handleSectionRef}         
       aria-label="About SmileCraft Dental Studio"
     >
-      {/* Subtle background decoration */}
       <div className="about__bg-circle" aria-hidden="true" />
 
       <div className="about__inner">
 
-        {/* ── LEFT — Text Content ── */}
+        {/* LEFT — Text Content */}
         <div className="about__content">
 
-          {/* Eyebrow */}
           <p className="about__eyebrow">
             <SparkleIcon />
             Dentistry That Feels Different
           </p>
 
-          {/* Heading */}
           <h2 className="about__heading">
             A Better Experience Starts With{" "}
             <span className="about__heading-accent">Better Care</span>
           </h2>
 
-          {/* Gold divider line */}
           <div className="about__gold-line" aria-hidden="true" />
 
-          {/* Body paragraphs */}
           <p className="about__body">
             We believe visiting a dental clinic should feel calm, comfortable,
             and reassuring — not stressful or rushed.
@@ -109,7 +110,6 @@ export default function AboutSection({ onLearnMore }) {
             technology and compassion working hand in hand.
           </p>
 
-          {/* Highlight checklist */}
           <ul className="about__highlights" aria-label="What makes us different">
             {highlights.map((item, i) => (
               <li key={i} className="about__highlight-item">
@@ -121,29 +121,26 @@ export default function AboutSection({ onLearnMore }) {
             ))}
           </ul>
 
-          {/* Tagline */}
           <p className="about__tagline">
             Gentle Hands.&nbsp; Honest Care.&nbsp; Beautiful Results.
           </p>
 
-          {/* CTA */}
-          <a href="/conatct#Contactsection">
-          <button
-            className="btn btn--primary about__cta"
-            onClick={onLearnMore}
-            aria-label="Learn more about SmileCraft"
-          >
-            Discover Our Story
-           
-          </button>
+          <a href="/contact#Contactsection">
+            <button
+              className="btn btn--primary about__cta"
+              onClick={onLearnMore}
+              aria-label="Learn more about SmileCraft"
+            >
+              Discover Our Story
+              <ArrowRightIcon />
+            </button>
           </a>
 
         </div>
 
-        {/* ── RIGHT — Visual / Image ── */}
+        {/* RIGHT — Visual */}
         <div className="about__visual">
 
-          {/* Main clinic image placeholder — replace src with real image */}
           <div className="about__img-wrap">
             <img
               src={aboutimg}
@@ -151,12 +148,9 @@ export default function AboutSection({ onLearnMore }) {
               className="about__img"
               loading="lazy"
             />
-
-            {/* Gold frame accent */}
             <div className="about__img-frame" aria-hidden="true" />
           </div>
 
-          {/* Floating stat cards */}
           <div className="about__stats" aria-label="Practice highlights">
             {stats.map((s, i) => (
               <div key={i} className="about__stat-card">
@@ -166,7 +160,6 @@ export default function AboutSection({ onLearnMore }) {
             ))}
           </div>
 
-          {/* Small floating badge — bottom left of image */}
           <div className="about__badge" aria-label="Fear-free dental care">
             <span className="about__badge-dot" aria-hidden="true" />
             Fear-Free Dental Care

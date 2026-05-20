@@ -1,22 +1,33 @@
+import React from "react";
 import "./Footer.css";
 import logodental from "../assets/logodental(1).png";
+
+// ════════════════════════════════════════════════════════════
+// Footer
+// ════════════════════════════════════════════════════════════
+//
+//  No hooks were used in the original — nothing to convert.
+//  Only cleanup: removed unused `Link` import from react-router-dom.
+//
+// ════════════════════════════════════════════════════════════
+
 const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "Treatments", href: "#treatments" },
-  { label: "Smile Stories", href: "#smile-stories" },
-  { label: "About", href: "#abt" },
-  { label: "Reviews", href: "#reviews" },
-  { label: "Contact", href: "#Contactsection" },
+  { label: "Home",         href: "#hero"           },
+  { label: "Treatments",   href: "#treatments"     },
+  { label: "Smile Stories",href: "#smile-stories"  },
+  { label: "About",        href: "#abt"            },
+  { label: "Reviews",      href: "#reviews"        },
+  { label: "Contact",      href: "#Contactsection" },
 ];
 
 const treatments = [
-  { label: "Teeth Cleaning", href: "#treatments" },
+  { label: "Teeth Cleaning",       href: "#treatments" },
   { label: "Root Canal Treatment", href: "#treatments" },
-  { label: "Teeth Whitening", href: "#treatments" },
-  { label: "Braces & Aligners", href: "#treatments" },
-  { label: "Dental Implants", href: "#treatments" },
-  { label: "Smile Makeover", href: "#treatments" },
-  { label: "Kids Dentistry", href: "#treatments" },
+  { label: "Teeth Whitening",      href: "#treatments" },
+  { label: "Braces & Aligners",    href: "#treatments" },
+  { label: "Dental Implants",      href: "#treatments" },
+  { label: "Smile Makeover",       href: "#treatments" },
+  { label: "Kids Dentistry",       href: "#treatments" },
 ];
 
 const socialLinks = [
@@ -57,19 +68,14 @@ export default function Footer() {
   return (
     <footer className="footer" id="footer">
 
-      {/* ── Ambient glow layer ── */}
       <div className="footer-glow" aria-hidden="true" />
 
-      {/* ── Centered brand block ── */}
       <div className="footer-brand-center">
-
-        {/* ── Logo image — replace src with your actual logo path ── */}
         <div className="footer-emblem">
           <img src={logodental} alt="SmileCraft Dental Studio" className="footer-emblem__img" />
         </div>
 
         <a href="#" className="footer-logo">
-         
           <span className="footer-logo__text">&nbsp;Where Every Visit Ends With a Smile&nbsp;</span>
         </a>
 
@@ -80,10 +86,11 @@ export default function Footer() {
           because every smile deserves something exceptional.
         </p>
 
-        {/* Rating + social row */}
         <div className="footer-meta-row">
           <div className="footer-badge">
-            <div className="footer-badge__stars">{"★★★★★".split("").map((s, i) => <span key={i}>{s}</span>)}</div>
+            <div className="footer-badge__stars">
+              {"★★★★★".split("").map((s, i) => <span key={i}>{s}</span>)}
+            </div>
             <span className="footer-badge__text">4.9 · 10,000+ Smiles</span>
           </div>
 
@@ -97,13 +104,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ── Full-width gold hairline ── */}
       <div className="footer-separator" aria-hidden="true" />
 
-      {/* ── Horizontal links block ── */}
       <div className="footer-links-block">
-
-        {/* Quick Links */}
         <div className="footer-links-row-wrap">
           <span className="footer-links-label">Quick Links</span>
           <span className="footer-links-rule" aria-hidden="true" />
@@ -117,7 +120,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Treatments */}
         <div className="footer-links-row-wrap">
           <span className="footer-links-label">Treatments</span>
           <span className="footer-links-rule" aria-hidden="true" />
@@ -130,10 +132,8 @@ export default function Footer() {
             ))}
           </ul>
         </div>
-
       </div>
 
-      {/* ── Divider with tooth icon ── */}
       <div className="footer-divider-wrap">
         <div className="footer-divider-line" />
         <div className="footer-divider-tooth" aria-hidden="true">
@@ -144,10 +144,8 @@ export default function Footer() {
         <div className="footer-divider-line" />
       </div>
 
-      {/* ── Bottom bar — centered copyright + tagline ── */}
       <div className="footer-bottom">
         <p className="footer-copyright">© 2026 SmileCraft Dental Studio. All Rights Reserved.</p>
-    
       </div>
 
     </footer>

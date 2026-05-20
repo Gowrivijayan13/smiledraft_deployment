@@ -1,5 +1,21 @@
-import { useState, useEffect, useRef } from "react";
-import "./Doctorsection.css"
+import React from "react";
+import "./Doctorsection.css";
+
+// ════════════════════════════════════════════════════════════
+// DoctorSection
+// ════════════════════════════════════════════════════════════
+//
+//  ALL React hooks removed. Replaced with:
+//  - Custom hook useVisible() → makeVisibleRef() factory function
+//    Returns a ref callback that wires its own IntersectionObserver
+//    and adds "doc--visible" directly to the DOM node on intersect.
+//  - useState(visible) inside useVisible → classList.add("doc--visible")
+//  - useEffect inside useVisible → observer created in the ref callback
+//  - className={`... ${visible ? "doc--visible" : ""}`} → starts without
+//    the class; observer adds it imperatively when element enters viewport
+//
+// ════════════════════════════════════════════════════════════
+
 const doctors = [
   {
     id: 1,
@@ -8,16 +24,11 @@ const doctors = [
     experience: "15+ Years",
     quote: "Exceptional dentistry begins with trust, patience, and compassion.",
     bio: "Dr. Priya leads SmileCraft's cosmetic division with a philosophy rooted in listening first. She has transformed over 4,000 smiles across Chennai — from subtle corrections to complete makeovers.",
-    specializations: [
-      "Cosmetic Dentistry",
-      "Smile Makeovers",
-      "Root Canal Therapy",
-      "Dental Implants",
-    ],
+    specializations: ["Cosmetic Dentistry", "Smile Makeovers", "Root Canal Therapy", "Dental Implants"],
     stats: [
       { value: "4,000+", label: "Smiles" },
-      { value: "15+", label: "Years" },
-      { value: "4.9★", label: "Rating" },
+      { value: "15+",    label: "Years"  },
+      { value: "4.9★",   label: "Rating" },
     ],
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80&fit=crop&crop=face",
     badge: "Lead Specialist",
@@ -30,16 +41,11 @@ const doctors = [
     experience: "11 Years",
     quote: "A straight smile is a confident smile.",
     bio: "Specializing in modern orthodontic solutions, Dr. Arjun brings precision and artistry to every alignment case — from teens to adults.",
-    specializations: [
-      "Braces & Aligners",
-      "Jaw Corrections",
-      "Retainer Therapy",
-      "Teen Orthodontics",
-    ],
+    specializations: ["Braces & Aligners", "Jaw Corrections", "Retainer Therapy", "Teen Orthodontics"],
     stats: [
-      { value: "2,500+", label: "Cases" },
-      { value: "11", label: "Years" },
-      { value: "98%", label: "Success" },
+      { value: "2,500+", label: "Cases"   },
+      { value: "11",     label: "Years"   },
+      { value: "98%",    label: "Success" },
     ],
     image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80&fit=crop&crop=face",
     badge: "Orthodontics",
@@ -52,16 +58,11 @@ const doctors = [
     experience: "9 Years",
     quote: "Little smiles need the biggest care.",
     bio: "Dr. Meena has built a reputation as Chennai's most patient and playful kids dentist — turning nervous first-timers into enthusiastic regulars.",
-    specializations: [
-      "Kids Dentistry",
-      "Preventive Care",
-      "Pit & Fissure Sealing",
-      "Habit Counselling",
-    ],
+    specializations: ["Kids Dentistry", "Preventive Care", "Pit & Fissure Sealing", "Habit Counselling"],
     stats: [
-      { value: "3,200+", label: "Kids" },
-      { value: "9", label: "Years" },
-      { value: "100%", label: "Gentle" },
+      { value: "3,200+", label: "Kids"   },
+      { value: "9",      label: "Years"  },
+      { value: "100%",   label: "Gentle" },
     ],
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600&q=80&fit=crop&crop=face",
     badge: "Paediatrics",
@@ -69,22 +70,51 @@ const doctors = [
   },
 ];
 
-function useVisible(threshold = 0.12) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
+// ── REPLACED: useVisible(threshold) custom hook → factory fn ──
+//
+//  OLD:
+//    function useVisible(threshold = 0.12) {
+//      const ref = useRef(null);
+//      const [visible, setVisible] = useState(false);
+//      useEffect(() => {
+//        const el = ref.current;
+//        if (!el) return;
+//        const obs = new IntersectionObserver(
+//          ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+//          { threshold }
+//        );
+//        obs.observe(el);
+//        return () => obs.disconnect();
+//      }, []);
+//      return [ref, visible];   // [ref, booleanState]
+//    }
+//    // usage:
+//    const [ref, visible] = useVisible(0.1);
+//    <div ref={ref} className={`doc-featured${visible ? " doc--visible" : ""}`}>
+//
+//  NEW: makeVisibleRef(threshold) returns a ref callback.
+//    The element starts without "doc--visible"; the observer adds it directly.
+//    No state, no re-render.
+//    // usage:
+//    <div ref={makeVisibleRef(0.1)} className="doc-featured">
+
+function makeVisibleRef(threshold = 0.12) {
+  return function (el) {
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("doc--visible");
+          obs.disconnect();
+        }
+      },
       { threshold }
     );
     obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, visible];
+  };
 }
 
+// ─── Icons ────────────────────────────────────────────────────
 function CheckIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
@@ -94,26 +124,29 @@ function CheckIcon() {
   );
 }
 
+// ── REPLACED: FeaturedDoctorCard — useVisible hook → makeVisibleRef ──
+//
+//  OLD:  const [ref, visible] = useVisible(0.1);
+//        <div ref={ref} className={`doc-featured${visible ? " doc--visible" : ""}`}>
+//
+//  NEW:  <div ref={makeVisibleRef(0.1)} className="doc-featured">
+
 function FeaturedDoctorCard({ doc }) {
-  const [ref, visible] = useVisible(0.1);
   return (
-    <div ref={ref} className={`doc-featured${visible ? " doc--visible" : ""}`}>
+    <div ref={makeVisibleRef(0.1)} className="doc-featured">
       {/* Image col */}
       <div className="doc-featured__img-wrap">
         <div className="doc-featured__img-frame">
           <img src={doc.image} alt={doc.name} className="doc-featured__img" />
-          {/* Floating badge */}
           <div className="doc-featured__badge">
             <span className="doc-badge__dot" />
             {doc.badge}
           </div>
-          {/* Floating experience pill */}
           <div className="doc-featured__exp-pill">
             <span className="doc-exp__number">{doc.experience}</span>
             <span className="doc-exp__label">Experience</span>
           </div>
         </div>
-        {/* Decorative ring behind image */}
         <div className="doc-featured__ring" />
       </div>
 
@@ -124,10 +157,8 @@ function FeaturedDoctorCard({ doc }) {
         <h3 className="doc-featured__name">{doc.name}</h3>
         <p className="doc-featured__role">{doc.role}</p>
 
-        {/* Gold line */}
         <div className="doc__gold-line" />
 
-        {/* Quote */}
         <blockquote className="doc-featured__quote">
           <span className="doc-quote__mark">"</span>
           {doc.quote}
@@ -136,7 +167,6 @@ function FeaturedDoctorCard({ doc }) {
 
         <p className="doc-featured__bio">{doc.bio}</p>
 
-        {/* Specializations */}
         <div className="doc-featured__specs">
           {doc.specializations.map((s) => (
             <div key={s} className="doc-spec__item">
@@ -146,7 +176,6 @@ function FeaturedDoctorCard({ doc }) {
           ))}
         </div>
 
-        {/* Stats row */}
         <div className="doc-featured__stats">
           {doc.stats.map((st) => (
             <div key={st.label} className="doc-stat">
@@ -156,31 +185,37 @@ function FeaturedDoctorCard({ doc }) {
           ))}
         </div>
 
-        {/* CTA */}
         <div className="doc-featured__actions">
-          <a href="#Contactsection"><button className="doc-btn doc-btn--primary">Book with Dr. Priya</button></a>
-          
+          <a href="#Contactsection">
+            <button className="doc-btn doc-btn--primary">Book with Dr. Priya</button>
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
+// ── REPLACED: SmallDoctorCard — useVisible hook → makeVisibleRef ──
+//
+//  OLD:  const [ref, visible] = useVisible(0.1);
+//        <div ref={ref} className={`doc-card${visible ? " doc--visible" : ""}`}
+//             style={{ transitionDelay: `${index * 120}ms` }}>
+//
+//  NEW:  <div ref={makeVisibleRef(0.1)} className="doc-card"
+//             style={{ transitionDelay: `${index * 120}ms` }}>
+
 function SmallDoctorCard({ doc, index }) {
-  const [ref, visible] = useVisible(0.1);
   return (
     <div
-      ref={ref}
-      className={`doc-card${visible ? " doc--visible" : ""}`}
+      ref={makeVisibleRef(0.1)}
+      className="doc-card"
       style={{ transitionDelay: `${index * 120}ms` }}
     >
-      {/* Image */}
       <div className="doc-card__img-wrap">
         <img src={doc.image} alt={doc.name} className="doc-card__img" />
         <div className="doc-card__badge">{doc.badge}</div>
       </div>
 
-      {/* Info */}
       <div className="doc-card__body">
         <div className="doc-card__header">
           <div>
@@ -209,16 +244,27 @@ function SmallDoctorCard({ doc, index }) {
           ))}
         </div>
 
-        <a href="#Contactsection"><button className="doc-card__cta">Book Appointment</button></a>
+        <a href="#Contactsection">
+          <button className="doc-card__cta">Book Appointment</button>
+        </a>
       </div>
     </div>
   );
 }
 
-export default function DoctorSection() {
-  const [headerRef, headerVisible] = useVisible(0.15);
-  const [gridRef, gridVisible] = useVisible(0.08);
+// ── REPLACED: DoctorSection — useVisible ×2 → makeVisibleRef ──
+//
+//  OLD:
+//    const [headerRef, headerVisible] = useVisible(0.15);
+//    const [gridRef,   gridVisible]   = useVisible(0.08);
+//    <div ref={headerRef} className={`doc-header${headerVisible ? " doc--visible" : ""}`}>
+//    <div ref={gridRef}   className="doc-grid">   ← gridVisible only toggled class on grid
+//
+//  NEW:
+//    <div ref={makeVisibleRef(0.15)} className="doc-header">
+//    <div ref={makeVisibleRef(0.08)} className="doc-grid">
 
+export default function DoctorSection() {
   return (
     <>
       <style>{`
@@ -241,7 +287,6 @@ export default function DoctorSection() {
           --sh-navy: 0 4px 20px rgba(23,50,77,0.22),0 2px 8px rgba(23,50,77,0.14);
         }
 
-        /* ── SECTION ── */
         .doc-section {
           background: var(--white);
           padding: 96px 0 112px;
@@ -257,8 +302,6 @@ export default function DoctorSection() {
           background: linear-gradient(90deg, transparent 0%, var(--gold) 40%, var(--gold-dark) 60%, transparent 100%);
           opacity: 0.5;
         }
-
-        /* Background texture dots */
         .doc-section::after {
           content: '';
           position: absolute;
@@ -269,14 +312,11 @@ export default function DoctorSection() {
           opacity: 0.25;
           pointer-events: none;
         }
-
         .doc-container {
           max-width: 1200px;
           margin: 0 auto;
           padding: 0 clamp(1.25rem, 4vw, 3rem);
         }
-
-        /* ── HEADER ── */
         .doc-header {
           text-align: center;
           margin-bottom: 72px;
@@ -285,7 +325,6 @@ export default function DoctorSection() {
           transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
         }
         .doc-header.doc--visible { opacity:1; transform:translateY(0); }
-
         .doc-eyebrow, .doc__eyebrow {
           display: inline-flex; align-items: center; gap: 8px;
           font-family: var(--font-b); font-size: 0.64rem; font-weight: 600;
@@ -295,7 +334,6 @@ export default function DoctorSection() {
         .doc-eyebrow::before, .doc__eyebrow::before {
           content: ''; display: block; width: 24px; height: 1px; background: var(--gold);
         }
-
         .doc-heading {
           font-family: var(--font-d);
           font-size: clamp(2.4rem, 4.5vw, 3.4rem);
@@ -304,13 +342,10 @@ export default function DoctorSection() {
           margin: 0 0 16px;
         }
         .doc-heading em { font-style: italic; color: var(--gold); }
-
         .doc-header-sub {
           font-size: 1.0625rem; color: var(--charcoal-mid);
           line-height: 1.75; max-width: 48ch; margin: 0 auto;
         }
-
-        /* ── REVEAL ANIMATION BASE ── */
         .doc-featured, .doc-card {
           opacity: 0;
           transform: translateY(28px);
@@ -318,10 +353,6 @@ export default function DoctorSection() {
                       box-shadow 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
         }
         .doc--visible { opacity: 1; transform: translateY(0); }
-
-        /* ══════════════════════════════════════
-           FEATURED DOCTOR — full editorial card
-        ══════════════════════════════════════ */
         .doc-featured {
           display: grid;
           grid-template-columns: 420px 1fr;
@@ -333,8 +364,6 @@ export default function DoctorSection() {
           overflow: hidden;
           margin-bottom: 56px;
         }
-
-        /* Image side */
         .doc-featured__img-wrap {
           position: relative;
           background: var(--ash);
@@ -365,8 +394,6 @@ export default function DoctorSection() {
           transform: scale(1.03);
           filter: saturate(1) contrast(1.06);
         }
-
-        /* Floating badge top-left */
         .doc-featured__badge {
           position: absolute; top: 24px; left: 24px;
           display: flex; align-items: center; gap: 8px;
@@ -385,8 +412,6 @@ export default function DoctorSection() {
         @keyframes docPulse {
           0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(1.2)}
         }
-
-        /* Floating experience pill bottom-left */
         .doc-featured__exp-pill {
           position: absolute; bottom: 28px; left: 24px;
           background: rgba(255,255,255,0.96);
@@ -404,13 +429,10 @@ export default function DoctorSection() {
           font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em;
           text-transform: uppercase; color: var(--charcoal-muted); margin-top: 2px;
         }
-
-        /* Content side */
         .doc-featured__content {
           padding: 52px 48px 48px;
           display: flex; flex-direction: column;
         }
-
         .doc-featured__name {
           font-family: var(--font-d);
           font-size: clamp(1.8rem, 2.5vw, 2.4rem);
@@ -422,13 +444,11 @@ export default function DoctorSection() {
           font-size: 0.875rem; color: var(--charcoal-muted);
           letter-spacing: 0.04em; margin: 0 0 24px;
         }
-
         .doc__gold-line {
           width: 56px; height: 1.5px;
           background: linear-gradient(90deg, var(--gold) 0%, var(--gold-dark) 100%);
           border-radius: 2px; margin-bottom: 24px;
         }
-
         .doc-featured__quote {
           font-family: var(--font-d);
           font-size: 1.35rem; font-style: italic;
@@ -439,13 +459,10 @@ export default function DoctorSection() {
           color: var(--gold); font-size: 1.6rem; line-height: 0;
           vertical-align: -6px; font-style: normal;
         }
-
         .doc-featured__bio {
           font-size: 0.9375rem; color: var(--charcoal-mid);
           line-height: 1.75; margin: 0 0 24px; max-width: 48ch;
         }
-
-        /* Specializations */
         .doc-featured__specs {
           display: grid; grid-template-columns: 1fr 1fr;
           gap: 10px; margin-bottom: 32px;
@@ -454,8 +471,6 @@ export default function DoctorSection() {
           display: flex; align-items: center; gap: 8px;
           font-size: 0.875rem; color: var(--charcoal);
         }
-
-        /* Stats */
         .doc-featured__stats {
           display: flex; gap: 28px; margin-bottom: 36px;
           padding: 20px 24px;
@@ -473,10 +488,7 @@ export default function DoctorSection() {
           font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em;
           text-transform: uppercase; color: var(--charcoal-muted); margin-top: 4px;
         }
-
-        /* Actions */
         .doc-featured__actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
-
         .doc-btn--primary {
           background: var(--navy); color: #fff; border: 2px solid var(--navy);
           font-family: var(--font-b); font-size: 0.8rem; font-weight: 600;
@@ -490,23 +502,6 @@ export default function DoctorSection() {
           box-shadow: 0 8px 32px rgba(23,50,77,0.28), 0 0 0 3px var(--gold-border);
           transform: translateY(-2px);
         }
-        .doc-btn--ghost {
-          background: transparent; color: var(--navy);
-          border: none; font-family: var(--font-b); font-size: 0.875rem;
-          font-weight: 500; cursor: pointer; padding: 0;
-          position: relative; transition: color 0.2s;
-        }
-        .doc-btn--ghost::after {
-          content: ''; position: absolute; bottom: -2px; left: 0;
-          width: 0; height: 1.5px; background: var(--gold);
-          transition: width 0.3s var(--ease-out);
-        }
-        .doc-btn--ghost:hover::after { width: 100%; }
-        .doc-btn--ghost:hover { color: var(--gold-dark); }
-
-        /* ══════════════════════════════════════
-           SMALL DOCTOR CARDS
-        ══════════════════════════════════════ */
         .doc-grid-label {
           font-family: var(--font-b); font-size: 0.64rem; font-weight: 600;
           letter-spacing: 0.18em; text-transform: uppercase;
@@ -516,11 +511,9 @@ export default function DoctorSection() {
         .doc-grid-label::after {
           content: ''; flex: 1; height: 1px; background: var(--char-border);
         }
-
         .doc-grid {
           display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
         }
-
         .doc-card {
           background: var(--white); border-radius: 24px;
           border: 1px solid var(--char-border);
@@ -530,8 +523,6 @@ export default function DoctorSection() {
           box-shadow: var(--sh-card-hover); border-color: var(--gold-border);
           transform: translateY(-5px) !important;
         }
-
-        /* Card image */
         .doc-card__img-wrap {
           position: relative; height: 220px; overflow: hidden;
           background: var(--ash);
@@ -552,10 +543,7 @@ export default function DoctorSection() {
           letter-spacing: 0.12em; text-transform: uppercase;
           padding: 5px 12px; border-radius: 9999px;
         }
-
-        /* Card body */
         .doc-card__body { padding: 24px 24px 28px; }
-
         .doc-card__header {
           display: flex; align-items: flex-start;
           justify-content: space-between; gap: 12px; margin-bottom: 12px;
@@ -577,14 +565,11 @@ export default function DoctorSection() {
           font-family: var(--font-d); font-size: 1rem; font-weight: 700;
           color: var(--gold-dark); white-space: nowrap;
         }
-
         .doc-card__quote {
           font-family: var(--font-d); font-style: italic;
           font-size: 0.975rem; color: var(--navy-mid);
           line-height: 1.5; margin: 0 0 16px;
         }
-
-        /* Specialty tags */
         .doc-card__specs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
         .doc-spec__tag {
           font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
@@ -592,8 +577,6 @@ export default function DoctorSection() {
           border-radius: 9999px; padding: 4px 12px;
           border: 1px solid var(--navy-border);
         }
-
-        /* Card stats */
         .doc-card__stats { display: flex; gap: 0; margin-bottom: 20px; }
         .doc-card__stat {
           flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -609,8 +592,6 @@ export default function DoctorSection() {
           font-size: 0.58rem; font-weight: 600; letter-spacing: 0.14em;
           text-transform: uppercase; color: var(--charcoal-muted); margin-top: 3px;
         }
-
-        /* Card CTA */
         .doc-card__cta {
           width: 100%; background: transparent; color: var(--navy);
           border: 1.5px solid var(--navy-border);
@@ -623,8 +604,6 @@ export default function DoctorSection() {
           background: var(--navy); color: #fff; border-color: var(--navy);
           transform: translateY(-1px);
         }
-
-        /* ── BOTTOM BAND ── */
         .doc-bottom {
           margin-top: 64px; padding: 36px 44px;
           background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
@@ -638,7 +617,6 @@ export default function DoctorSection() {
           background: radial-gradient(ellipse 50% 80% at 50% 110%, rgba(212,176,106,0.14) 0%, transparent 70%);
           pointer-events: none;
         }
-        .doc-bottom__left {}
         .doc-bottom__eyebrow {
           font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em;
           text-transform: uppercase; color: var(--gold);
@@ -653,7 +631,6 @@ export default function DoctorSection() {
         }
         .doc-bottom__heading em { font-style: italic; color: var(--gold); }
         .doc-bottom__actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-
         .doc-btn--inverse {
           background: transparent; color: #fff;
           border: 1.5px solid rgba(255,255,255,0.4);
@@ -679,13 +656,10 @@ export default function DoctorSection() {
           background: var(--gold-dark); border-color: var(--gold-dark);
           box-shadow: 0 8px 32px rgba(212,176,106,0.50); transform: translateY(-2px);
         }
-
-        /* ── RESPONSIVE ── */
         @media(max-width:1024px){
           .doc-featured { grid-template-columns: 1fr; }
           .doc-featured__img-wrap { min-height: 380px; }
           .doc-featured__content { padding: 36px 32px 40px; }
-          .doc-featured__specs { grid-template-columns: 1fr 1fr; }
         }
         @media(max-width:768px){
           .doc-section { padding: 64px 0 80px; }
@@ -704,31 +678,29 @@ export default function DoctorSection() {
       <section className="doc-section" id="experts">
         <div className="doc-container">
 
-          {/* Section header */}
-          <div ref={headerRef} className={`doc-header${headerVisible ? " doc--visible" : ""}`}>
+          {/* Section header — makeVisibleRef replaces useVisible */}
+          <div ref={makeVisibleRef(0.15)} className="doc-header">
             <p className="doc-eyebrow">Meet Your Experts</p>
             <h2 className="doc-heading">
               Care Led by <em>Experience</em>
             </h2>
             <p className="doc-header-sub">
-              Our team of specialists brings decades of combined expertise — and a genuine commitment to making every visit feel exceptional.
+              Our team of specialists brings decades of combined expertise — and a genuine
+              commitment to making every visit feel exceptional.
             </p>
           </div>
 
-          {/* Featured doctor */}
           <FeaturedDoctorCard doc={doctors[0]} />
 
-          {/* Label for secondary doctors */}
           <p className="doc-grid-label">Also on our team</p>
 
-          {/* Secondary doctors grid */}
-          <div ref={gridRef} className="doc-grid">
+          {/* doc-grid itself doesn't need a visibility ref — each SmallDoctorCard has its own */}
+          <div className="doc-grid">
             {doctors.slice(1).map((doc, i) => (
               <SmallDoctorCard key={doc.id} doc={doc} index={i} />
             ))}
           </div>
 
-          {/* Bottom CTA band */}
           <div className="doc-bottom">
             <div className="doc-bottom__left">
               <p className="doc-bottom__eyebrow">Your Smile, Our Priority</p>
@@ -738,10 +710,10 @@ export default function DoctorSection() {
             </div>
             <div className="doc-bottom__actions">
               <a href="#Contactsection">
-              <button className="doc-btn--inverse">View All Doctors</button>
-              <button className="doc-btn--gold">Book Consultation</button></a>
+                <button className="doc-btn--inverse">View All Doctors</button>
+                <button className="doc-btn--gold">Book Consultation</button>
+              </a>
             </div>
-            
           </div>
 
         </div>

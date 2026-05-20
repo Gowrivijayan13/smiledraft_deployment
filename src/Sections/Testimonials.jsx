@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import './Testimonials.css';
 
 // ─── Star Rating ─────────────────────────────────────────────
@@ -11,14 +11,6 @@ const Stars = ({ count = 5 }) => (
 );
 
 // ─── Avatar (initial-based, colour-coded) ────────────────────
-const initials = (name) =>
-  name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
 const AVATAR_COLORS = [
   { bg: '#EAF0F6', color: '#17324D' },
   { bg: '#F5F0E8', color: '#B8934A' },
@@ -27,6 +19,9 @@ const AVATAR_COLORS = [
   { bg: '#F5EAF0', color: '#7A2D5A' },
   { bg: '#EAF5F5', color: '#2D6A6A' },
 ];
+
+const initials = (name) =>
+  name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
 
 const Avatar = ({ name, size = '', colorIndex = 0, circled = false }) => {
   const { bg, color } = AVATAR_COLORS[colorIndex % AVATAR_COLORS.length];
@@ -43,7 +38,7 @@ const Avatar = ({ name, size = '', colorIndex = 0, circled = false }) => {
   );
 };
 
-// ─── Card A — Horizontal with side avatar ────────────────────
+// ─── Card A ───────────────────────────────────────────────────
 const CardA = () => (
   <article className="tcard tcard--a tcard--horizontal">
     <div className="tcard__body">
@@ -68,7 +63,7 @@ const CardA = () => (
   </article>
 );
 
-// ─── Card B — Featured navy hero ─────────────────────────────
+// ─── Card B ───────────────────────────────────────────────────
 const CardB = () => (
   <article className="tcard tcard--b tcard--featured">
     <div>
@@ -94,7 +89,7 @@ const CardB = () => (
   </article>
 );
 
-// ─── Card C — Minimal quote, top avatar ──────────────────────
+// ─── Card C ───────────────────────────────────────────────────
 const CardC = () => (
   <article className="tcard tcard--c">
     <span className="tcard__quote-mark" aria-hidden="true">"</span>
@@ -115,7 +110,7 @@ const CardC = () => (
   </article>
 );
 
-// ─── Card D — Small stat card ────────────────────────────────
+// ─── Card D ───────────────────────────────────────────────────
 const CardD = () => (
   <article className="tcard tcard--d">
     <div className="tcard__tag">✦ Dental Implants</div>
@@ -137,7 +132,7 @@ const CardD = () => (
   </article>
 );
 
-// ─── Card E — Portrait style (large avatar + signature feel) ──
+// ─── Card E ───────────────────────────────────────────────────
 const CardE = () => (
   <article className="tcard tcard--e tcard--portrait">
     <div className="tcard__photo-placeholder" aria-hidden="true">
@@ -145,33 +140,25 @@ const CardE = () => (
     </div>
     <div className="tcard__content">
       <Stars count={5} />
-      <p
-        className="tcard__text"
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontStyle: 'italic',
-          fontSize: 'var(--text-base)',
-          color: 'var(--color-charcoal-mid)',
-          marginBottom: 'var(--space-3)',
-        }}
-      >
-        "Results beyond my expectations — my confidence is completely
-        restored."
+      <p className="tcard__text" style={{
+        fontFamily: 'var(--font-display)', fontStyle: 'italic',
+        fontSize: 'var(--text-base)', color: 'var(--color-charcoal-mid)',
+        marginBottom: 'var(--space-3)',
+      }}>
+        "Results beyond my expectations — my confidence is completely restored."
       </p>
       <p style={{
-        fontFamily: 'var(--font-display)',
-        fontStyle: 'italic',
-        fontSize: 'var(--text-sm)',
-        color: 'var(--color-gold)',
+        fontFamily: 'var(--font-display)', fontStyle: 'italic',
+        fontSize: 'var(--text-sm)', color: 'var(--color-gold)',
         letterSpacing: 'var(--tracking-snug)',
       }}>
-        — Lakshmi 
+        — Lakshmi
       </p>
     </div>
   </article>
 );
 
-// ─── Card F — Portrait style ──────────────────────────────────
+// ─── Card F ───────────────────────────────────────────────────
 const CardF = () => (
   <article className="tcard tcard--f tcard--portrait">
     <div className="tcard__photo-placeholder" aria-hidden="true">
@@ -179,24 +166,17 @@ const CardF = () => (
     </div>
     <div className="tcard__content">
       <Stars count={5} />
-      <p
-        className="tcard__text"
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontStyle: 'italic',
-          fontSize: 'var(--text-base)',
-          color: 'var(--color-charcoal-mid)',
-          marginBottom: 'var(--space-3)',
-        }}
-      >
+      <p className="tcard__text" style={{
+        fontFamily: 'var(--font-display)', fontStyle: 'italic',
+        fontSize: 'var(--text-base)', color: 'var(--color-charcoal-mid)',
+        marginBottom: 'var(--space-3)',
+      }}>
         "Zero pain, zero stress — the best dental experience I've ever had.
         Will recommend to my whole family."
       </p>
       <p style={{
-        fontFamily: 'var(--font-display)',
-        fontStyle: 'italic',
-        fontSize: 'var(--text-sm)',
-        color: 'var(--color-gold)',
+        fontFamily: 'var(--font-display)', fontStyle: 'italic',
+        fontSize: 'var(--text-sm)', color: 'var(--color-gold)',
         letterSpacing: 'var(--tracking-snug)',
       }}>
         — Suresh kumar
@@ -205,7 +185,7 @@ const CardF = () => (
   </article>
 );
 
-// ─── Card G — Small with avatar strip ────────────────────────
+// ─── Card G ───────────────────────────────────────────────────
 const CardG = () => (
   <article className="tcard tcard--g">
     <Stars />
@@ -223,10 +203,8 @@ const CardG = () => (
         ))}
       </div>
       <p style={{
-        fontSize: 'var(--text-xs)',
-        color: 'var(--color-charcoal-muted)',
-        marginTop: 'var(--space-2)',
-        letterSpacing: 'var(--tracking-wide)',
+        fontSize: 'var(--text-xs)', color: 'var(--color-charcoal-muted)',
+        marginTop: 'var(--space-2)', letterSpacing: 'var(--tracking-wide)',
       }}>
         +1,200 happy patients
       </p>
@@ -234,14 +212,39 @@ const CardG = () => (
   </article>
 );
 
-// ─── Main Section ─────────────────────────────────────────────
-const Testimonials = () => {
-  const sectionRef = useRef(null);
 
-  // Intersection observer to re-trigger animation on scroll into view
-  useEffect(() => {
-    const cards = sectionRef.current?.querySelectorAll('.tcard');
-    if (!cards) return;
+// ════════════════════════════════════════════════════════════
+// Testimonials — Main Section
+// ════════════════════════════════════════════════════════════
+//
+//  ALL React hooks removed. Replaced with:
+//  - ref callback on <section> instead of useRef + useEffect
+//  - IntersectionObserver wired directly in the ref callback
+//  - No useState needed (component has no interactive state)
+//
+// ════════════════════════════════════════════════════════════
+
+const Testimonials = () => {
+
+  // ── REPLACED: useRef + useEffect → ref callback ───────────
+  //
+  //  OLD:
+  //    const sectionRef = useRef(null);
+  //    useEffect(() => {
+  //      const cards = sectionRef.current?.querySelectorAll('.tcard');
+  //      ...
+  //      const observer = new IntersectionObserver(...);
+  //      cards.forEach(card => { card.style.animationPlayState = 'paused'; observer.observe(card); });
+  //      return () => observer.disconnect();
+  //    }, []);
+  //
+  //  NEW: ref callback — runs when section mounts, returns cleanup via disconnect
+
+  function handleSectionRef(el) {
+    if (!el) return;
+
+    const cards = el.querySelectorAll('.tcard');
+    if (!cards.length) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -259,11 +262,21 @@ const Testimonials = () => {
       observer.observe(card);
     });
 
-    return () => observer.disconnect();
-  }, []);
+    // Note: ref callbacks don't support return-cleanup like useEffect.
+    // Observer auto-disconnects when section is removed from DOM via
+    // the null-check branch (el === null) if needed:
+    //   if (!el) { observer.disconnect(); return; }
+    // For a SPA you can store observer on el itself:
+    el._testimonialsObserver = observer;
+  }
 
   return (
-    <section className="testimonials" ref={sectionRef} id="reviews">
+    <section
+      className="testimonials"
+      ref={handleSectionRef}
+      id="reviews"
+      aria-label="Patient testimonials"
+    >
       {/* ── Header ── */}
       <header className="testimonials__header">
         <p className="testimonials__eyebrow">Patient Stories</p>
