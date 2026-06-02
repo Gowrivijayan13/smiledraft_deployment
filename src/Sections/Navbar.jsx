@@ -3,14 +3,13 @@ import "./Navbar.css";
 import logodental from "../assets/logodental.png";
 
 const navLinks = [
-  { id: "home",         label: "Home"        },
-  { id: "treatments",   label: "Treatments"  },
-  { id: "smile-stories",label: "Smile Stories"},
-  { id: "technology",   label: "Technology"  },
-  { id: "experts",      label: "Experts"     },
-  { id: "reviews",      label: "Reviews"     },
+  { id: "home", label: "Home" },
+  { id: "treatments", label: "Treatments" },
+  { id: "smile-stories", label: "Smile Stories" },
+  { id: "technology", label: "Technology" },
+  { id: "experts", label: "Experts" },
+  { id: "reviews", label: "Reviews" },
 ];
-
 
 // ════════════════════════════════════════════════════════════
 // Header — Navbar
@@ -24,7 +23,6 @@ const navLinks = [
 // ════════════════════════════════════════════════════════════
 
 function Header() {
-
   // ── REPLACED: useState(menuOpen) → plain JS variable ──────
   //
   //  OLD:
@@ -37,20 +35,20 @@ function Header() {
   let menuOpen = false;
 
   // DOM node refs — populated by ref callbacks
-  let mobileMenuEl    = null;
+  let mobileMenuEl = null;
   let mobileOverlayEl = null;
-  let mobileToggleEl  = null;
+  let mobileToggleEl = null;
 
   function openMenu() {
     menuOpen = true;
-    mobileMenuEl    && mobileMenuEl.classList.add("show");
+    mobileMenuEl && mobileMenuEl.classList.add("show");
     mobileOverlayEl && mobileOverlayEl.classList.add("show");
     if (mobileToggleEl) mobileToggleEl.textContent = "✕";
   }
 
   function closeMenu() {
     menuOpen = false;
-    mobileMenuEl    && mobileMenuEl.classList.remove("show");
+    mobileMenuEl && mobileMenuEl.classList.remove("show");
     mobileOverlayEl && mobileOverlayEl.classList.remove("show");
     if (mobileToggleEl) mobileToggleEl.textContent = "☰";
   }
@@ -79,7 +77,7 @@ function Header() {
   function onScroll() {
     const past = window.scrollY > 60;
     headerEl && headerEl.classList.toggle("scrolled", past);
-    mergedEl && mergedEl.classList.toggle("show",     past);
+    mergedEl && mergedEl.classList.toggle("show", past);
   }
 
   function handleHeaderRef(el) {
@@ -96,7 +94,7 @@ function Header() {
   function scrollToSection(id) {
     const section = document.getElementById(id);
     if (section) {
-      const headerOffset  = 100;
+      const headerOffset = 100;
       const sectionPosition =
         section.getBoundingClientRect().top + window.pageYOffset - headerOffset;
       window.scrollTo({ top: sectionPosition, behavior: "smooth" });
@@ -108,7 +106,6 @@ function Header() {
     <>
       {/* ref callback replaces useRef + useEffect */}
       <header className="header" ref={handleHeaderRef}>
-
         {/* LEFT — Logo */}
         <div className="header-logo">
           <button
@@ -134,7 +131,7 @@ function Header() {
 
         {/* RIGHT — CTA */}
         <div className="header-join">
-          <a href="/contact#Contactsection" className="btn">
+          <a href="#Contactsection" className="btn">
             Smile Checkup
           </a>
         </div>
@@ -142,7 +139,9 @@ function Header() {
         {/* MERGED PILL — ref callback instead of scrolled state */}
         <div
           className="header-merged"
-          ref={(el) => { mergedEl = el; }}
+          ref={(el) => {
+            mergedEl = el;
+          }}
         >
           <button
             className="merged-logo logo-btn"
@@ -173,7 +172,7 @@ function Header() {
 
           <div className="merged-divider" />
 
-          <a href="/contact#Contactsection">
+          <a href="#Contactsection">
             <button className="btn merged-btn">Smile Checkup</button>
           </a>
         </div>
@@ -181,7 +180,9 @@ function Header() {
         {/* Mobile Toggle — ref callback to get node for icon swap */}
         <button
           className="mobile-toggle"
-          ref={(el) => { mobileToggleEl = el; }}
+          ref={(el) => {
+            mobileToggleEl = el;
+          }}
           onClick={toggleMenu}
           aria-label="Toggle menu"
         >
@@ -192,14 +193,18 @@ function Header() {
       {/* Mobile Overlay — ref callback replaces menuOpen state */}
       <div
         className="mobile-overlay"
-        ref={(el) => { mobileOverlayEl = el; }}
+        ref={(el) => {
+          mobileOverlayEl = el;
+        }}
         onClick={closeMenu}
       />
 
       {/* Mobile Menu — ref callback replaces menuOpen state */}
       <div
         className="mobile-menu"
-        ref={(el) => { mobileMenuEl = el; }}
+        ref={(el) => {
+          mobileMenuEl = el;
+        }}
       >
         {navLinks.map((link) => (
           <button

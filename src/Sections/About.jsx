@@ -125,7 +125,7 @@ export default function AboutSection({ onLearnMore }) {
             Gentle Hands.&nbsp; Honest Care.&nbsp; Beautiful Results.
           </p>
 
-          <a href="/contact#Contactsection">
+          <a href="#Contactsection">
             <button
               className="btn btn--primary about__cta"
               onClick={onLearnMore}

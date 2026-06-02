@@ -170,7 +170,7 @@ export default function HeroSection({
 
         {/* CTA buttons */}
         <div className="hero__cta-group">
-          <a href="/contact#Contactsection">
+          <a href="#Contactsection">
             <button
               className="btn btn--primary btn--lg"
               onClick={onBookConsultation}
