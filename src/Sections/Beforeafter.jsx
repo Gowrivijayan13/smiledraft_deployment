@@ -1,5 +1,3 @@
-import "./BeforeAfter.css";
-
 import "./Beforeafter.css";
 import onea from "../assets/onea.png";
 import oneb from "../assets/oneb.png";
@@ -57,7 +55,7 @@ const categories = [
 
 const slides = {
   makeover: {
-    before:oneb,
+    before: oneb,
     after: onea,
     label: "Smile Makeover",
   },
@@ -68,7 +66,7 @@ const slides = {
     label: "Whitening",
   },
   implants: { before: implantsb, after: implantsa, label: "Implants" },
-  aligners: { before:alignersb, after: alignersa, label: "Aligners" },
+  aligners: { before: alignersb, after: alignersa, label: "Aligners" },
 };
 
 // ════════════════════════════════════════════════════════════
